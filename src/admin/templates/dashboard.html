@@ -1,0 +1,224 @@
+{% extends "_layout.html" %}
+
+{% block title %}Dashboard — Dartha Admin{% endblock %}
+
+{% block content %}
+<div x-data="dashboardPage()">
+
+  <div class="page-header">
+    <div>
+      <h1>Gestão de Knowledge</h1>
+      <div class="subtitle">Selecione um departamento para gerenciar os documentos do RAG</div>
+    </div>
+    <button class="btn btn-ghost" @click="openSectors = true">⚙ Gerenciar Setores</button>
+  </div>
+
+  <!-- Department cards -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
+    {% for dept in departments %}
+    <a href="/admin/{{ dept.slug }}" style="text-decoration: none;">
+      <div class="card" style="cursor: pointer; transition: border-color .15s; padding: 20px;"
+           onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#334155'">
+        <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #64748b; margin-bottom: 10px;">
+          {{ dept.name }}
+        </div>
+        <div style="font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 10px;">
+          {{ dept.total }}
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 11px;">
+          {% if dept.indexed %}
+            <span class="badge badge-green">{{ dept.indexed }} indexados</span>
+          {% endif %}
+          {% if dept.processing %}
+            <span class="badge badge-amber">{{ dept.processing }} processando</span>
+          {% endif %}
+          {% if dept.error %}
+            <span class="badge badge-red">{{ dept.error }} erro</span>
+          {% endif %}
+          {% if dept.total == 0 %}
+            <span class="badge badge-gray">sem arquivos</span>
+          {% endif %}
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- ================================================================
+       Sectors management modal
+       ================================================================ -->
+  <div class="modal-overlay" x-show="openSectors" x-cloak @keydown.escape.window="openSectors = false">
+    <div class="modal" @click.stop style="max-width: 520px;">
+
+      <!-- Header -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <div>
+          <h2>Gerenciar Setores</h2>
+          <div class="sub" style="margin-top:4px;">Crie, renomeie ou remova setores do RAG</div>
+        </div>
+        <button class="btn btn-ghost" style="padding:4px 10px;" @click="closeModal()">✕</button>
+      </div>
+
+      <!-- Sector list -->
+      <div style="max-height:320px; overflow-y:auto; margin-bottom:16px;">
+        <template x-if="sectors.length === 0">
+          <div style="text-align:center; color:#475569; padding:24px; font-size:13px;">
+            Nenhum setor cadastrado.
+          </div>
+        </template>
+        <template x-for="s in sectors" :key="s.slug">
+          <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:6px; margin-bottom:4px; background:#0f172a;">
+
+            <!-- Edit mode -->
+            <template x-if="editingSlug === s.slug">
+              <input class="input" x-model="editingName" style="flex:1; padding:5px 10px;"
+                     @keydown.enter="saveEdit(s.slug)"
+                     @keydown.escape="cancelEdit()"
+                     x-ref="editInput">
+            </template>
+
+            <!-- View mode -->
+            <template x-if="editingSlug !== s.slug">
+              <span style="flex:1; font-size:14px; color:#f1f5f9;" x-text="s.display_name"></span>
+            </template>
+
+            <!-- Actions: edit mode -->
+            <template x-if="editingSlug === s.slug">
+              <div style="display:flex; gap:4px;">
+                <button class="btn btn-primary" style="padding:4px 10px; font-size:12px;" @click="saveEdit(s.slug)">✓</button>
+                <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px;" @click="cancelEdit()">✕</button>
+              </div>
+            </template>
+
+            <!-- Actions: view mode (non-system only) -->
+            <template x-if="editingSlug !== s.slug && !s.is_system">
+              <div style="display:flex; gap:4px;">
+                <button class="btn btn-ghost" style="padding:4px 8px; font-size:13px;"
+                        @click="startEdit(s.slug, s.display_name)" title="Renomear">✏</button>
+                <button class="btn btn-ghost" style="padding:4px 8px; font-size:13px; color:#ef4444; border-color:#334155;"
+                        @click="deleteSector(s.slug, s.display_name)" title="Remover">🗑</button>
+              </div>
+            </template>
+
+          </div>
+        </template>
+      </div>
+
+      <!-- Error message -->
+      <div x-show="errorMsg" class="alert alert-error" style="margin-bottom:12px;" x-text="errorMsg"></div>
+
+      <!-- New sector form -->
+      <div style="border-top:1px solid #334155; padding-top:16px;">
+        <div style="font-size:11px; font-weight:700; color:#64748b; margin-bottom:8px; text-transform:uppercase; letter-spacing:.06em;">
+          Novo Setor
+        </div>
+        <div style="display:flex; gap:8px;">
+          <input class="input" x-model="newName" placeholder="Ex: Tributário, Trabalhista…" style="flex:1;"
+                 @keydown.enter="createSector()">
+          <button class="btn btn-primary" @click="createSector()" :disabled="!newName.trim() || saving">
+            <span x-show="!saving">+ Criar</span>
+            <span x-show="saving"><span class="spinner"></span></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /modal -->
+
+</div><!-- /x-data -->
+
+<script>
+function dashboardPage() {
+  return {
+    openSectors: false,
+    sectors: {{ sectors | tojson }},
+    newName: '',
+    editingSlug: null,
+    editingName: '',
+    errorMsg: '',
+    saving: false,
+
+    closeModal() {
+      this.openSectors = false;
+      this.cancelEdit();
+      this.newName = '';
+      this.errorMsg = '';
+    },
+
+    startEdit(slug, name) {
+      this.editingSlug = slug;
+      this.editingName = name;
+      this.errorMsg = '';
+    },
+
+    cancelEdit() {
+      this.editingSlug = null;
+      this.editingName = '';
+    },
+
+    async createSector() {
+      const name = this.newName.trim();
+      if (!name) return;
+      this.saving = true;
+      this.errorMsg = '';
+      try {
+        const fd = new FormData();
+        fd.append('display_name', name);
+        const res = await fetch('/admin/sectors', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (!data.ok) {
+          this.errorMsg = data.error || 'Erro ao criar setor.';
+        } else {
+          this.sectors.push({ slug: data.slug, display_name: data.display_name, is_system: 0 });
+          this.newName = '';
+          location.reload();
+        }
+      } catch (e) {
+        this.errorMsg = 'Erro de rede: ' + e.message;
+      } finally {
+        this.saving = false;
+      }
+    },
+
+    async saveEdit(slug) {
+      const name = this.editingName.trim();
+      if (!name) return;
+      this.errorMsg = '';
+      try {
+        const fd = new FormData();
+        fd.append('new_name', name);
+        const res = await fetch(`/admin/sectors/${slug}`, { method: 'PATCH', body: fd });
+        const data = await res.json();
+        if (!data.ok) {
+          this.errorMsg = data.error || 'Erro ao renomear.';
+        } else {
+          const s = this.sectors.find(s => s.slug === slug);
+          if (s) s.display_name = name;
+          this.cancelEdit();
+          location.reload();
+        }
+      } catch (e) {
+        this.errorMsg = 'Erro de rede: ' + e.message;
+      }
+    },
+
+    async deleteSector(slug, name) {
+      if (!confirm(`Remover o setor "${name}" e TODOS os seus documentos?\n\nEsta ação é irreversível.`)) return;
+      this.errorMsg = '';
+      try {
+        const res = await fetch(`/admin/sectors/${slug}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (!data.ok) {
+          this.errorMsg = data.error || 'Erro ao remover.';
+        } else {
+          this.sectors = this.sectors.filter(s => s.slug !== slug);
+          location.reload();
+        }
+      } catch (e) {
+        this.errorMsg = 'Erro de rede: ' + e.message;
+      }
+    },
+  };
+}
+</script>
+{% endblock %}

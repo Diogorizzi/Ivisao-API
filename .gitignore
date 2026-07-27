@@ -1,0 +1,69 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.agent
+.venv_dartha
+
+# Environment and secrets
+.env
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+*_err.log
+*_out.log
+*_err.txt
+
+# ChromaDB data
+chroma_data/
+
+# Nginx active config (gerado pelo init-ssl.sh na VM)
+nginx/active.conf
+
+# Client data (documents)
+data/
+!data/.gitkeep
+
+# Temporary files
+tmp/
+*.tmp
+
+# Memory data
+memories.pkl
+memory_bank/
+
+# Ad-hoc test scripts at root (not the tests/ suite)
+/test*.py
+/test*.ps1
+/test*.md
+/test*.xlsx
+/test*.docx
+/1.*.py
+
+# Debug and copy files
+/debug_app.py
+/src/app_copy.py
+
+# IDE and local tooling
+.vscode/
+.idea/
+*.swp
+*.swo
+.claude/
+
+# Visual brainstorming companion
+.superpowers/
+
+# Git worktrees
+.worktrees/

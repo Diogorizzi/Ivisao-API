@@ -1,0 +1,128 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Overview
+
+> A visual editor in AgentOS to build Agents, Teams, and Workflows.
+
+Build and orchestrate Agents, Teams, and Workflows on a live canvas to deploy production-ready agentic systems with AgentOS Studio.
+
+<Frame>
+  <video autoPlay muted loop playsInline style={{ borderRadius: "0.5rem", width: "100%", height: "auto" }}>
+    <source src="https://mintcdn.com/agno-v2/m6sNiHYWcrRvzlKQ/videos/studio.mp4?fit=max&auto=format&n=m6sNiHYWcrRvzlKQ&q=85&s=bc80199e2492f87abbfbd105e0d35f63" type="video/mp4" data-path="videos/studio.mp4" />
+  </video>
+</Frame>
+
+## Concepts
+
+**[Agents](/agent-os/studio/agents)** :
+Build agent by giving it a model, tools, and instructions. Add knowledge and memory to ground its responses and remember context.
+
+**[Teams](/agent-os/studio/teams)** :
+Build multi-agents team that works toward a shared goal. Choose how the leader coordinates with members using `coordinate`, `route`, `broadcast`, or `tasks` mode.
+
+**[Workflows](/agent-os/studio/workflows)** :
+Orchestrate agents and teams into step-based pipelines. Control the flow with loops, conditions, routers, and parallel execution. Use functions or cel expressions to evaluate conditions and selectors.
+
+**[Registry](/agent-os/studio/registry)** :
+Register the components Studio composes with: tools, models, databases, schemas, knowledge, `memory_managers`, and `session_summary_managers`. Register existing agents and teams to reuse them as members in Studio teams or steps in Studio workflows.
+
+## How It Works
+
+Studio connects to your running AgentOS instance and uses a Registry to populate available components.
+Build visually, test interactively, and publish when ready.
+
+1. Register your tools, models, databases, and schemas in a `Registry`
+2. Pass the registry **and a database** to `AgentOS`
+3. Open Studio in the [AgentOS Control Plane](https://os.agno.com/studio/agents) to start building
+
+```python theme={null}
+from agno.os import AgentOS
+from agno.db.postgres import PostgresDb
+from agno.registry import Registry
+from agno.models.openai import OpenAIChat
+from agno.tools.websearch import WebSearchTools
+
+db = PostgresDb(db_url="postgresql+psycopg://ai:ai@localhost:5532/ai")
+
+registry = Registry(
+    name="My Registry",
+    tools=[WebSearchTools()],
+    models=[OpenAIChat(id="gpt-5-mini")],
+    dbs=[db] #Studio requires the `db` parameter to save and load agents, teams, and workflows.
+)
+
+agent_os = AgentOS(
+    id="my-app",
+    db=db,
+    registry=registry,
+)
+
+app = agent_os.get_app()
+```
+
+## Development Lifecycle
+
+Studio manages the full development lifecycle from building to deploying complex agentic systems with AgentOS components.
+
+### 1. Build
+
+Create your agent, team, or workflow using the visual builder. use tools, models, and knowledge bases from the Registry, add instructions and configure the settings.
+
+<img src="https://mintcdn.com/agno-v2/jmCgYq2TCEl7A3iQ/images/agent-os-studio-create.png?fit=max&auto=format&n=jmCgYq2TCEl7A3iQ&q=85&s=d385bc8fbb8524591750698369b170bb" alt="Create an agent in Studio" width="549" height="332" data-path="images/agent-os-studio-create.png" />
+
+### 2. Save Draft or Publish Directly
+
+* Save your work as a draft or publish directly. Drafts can be edited and updated. Drafts helps you test your component before publishing it.
+* Publish or Draft multiple versions to checkpoint your progress.
+
+### 3. Test
+
+Once saved, test your draft or published version in the AgentOS:
+
+* **Chat Page**:
+
+  * Interact with your agent, team, or workflow in real-time
+  * Run specific version of the component by selecting it in the dropdown.
+
+  <img src="https://mintcdn.com/agno-v2/jmCgYq2TCEl7A3iQ/images/agent-os-studio-chat-page-versioning.png?fit=max&auto=format&n=jmCgYq2TCEl7A3iQ&q=85&s=7c59c37f566c5f1a05e051b349004ca1" alt="Run specific version of the component in the chat page" style={{ borderRadius: "8px" }} width="492" height="280" data-path="images/agent-os-studio-chat-page-versioning.png" />
+
+* **View Traces**: Inspect tool calls, model responses, and reasoning for each run
+
+* **Debug Mode**: Enable verbose logging to troubleshoot issues
+
+<Warning>
+  Before publishing, test and make sure your agent handles edge cases and
+  unexpected inputs gracefully.
+</Warning>
+
+### 4. Manage Versions
+
+Access the full version history for any agent, team, or workflow:
+
+<img src="https://mintcdn.com/agno-v2/jmCgYq2TCEl7A3iQ/images/agent-os-studio-versions-page.png?fit=max&auto=format&n=jmCgYq2TCEl7A3iQ&q=85&s=18edd16178768170407808d21d1d5542" alt="Versions page in Studio" style={{ borderRadius: "16px" }} width="1470" height="925" data-path="images/agent-os-studio-versions-page.png" />
+
+Two actions are available on this page:
+
+* **Restore**: open a draft for editing in Studio.
+* **Set Current**: choose which published version the API serves.
+
+Drafts are mutable: you can edit them in Studio and delete them. Published versions are immutable and undeletable. To change a published version, publish a new one. Only published versions can be set as current.
+
+<Tip>
+  Use descriptive version labels like `v1.2-improved-instructions` or
+  `before-refactor` to make it easy to identify versions later.
+</Tip>
+
+## Next Steps
+
+| Task                       | Guide                                                        |
+| -------------------------- | ------------------------------------------------------------ |
+| Build an agent             | [Studio Agents](/agent-os/studio/agents)                     |
+| Create a workflow          | [Studio Workflows](/agent-os/studio/workflows)               |
+| Compose a team             | [Studio Teams](/agent-os/studio/teams)                       |
+| Set up the registry        | [Studio Registry](/agent-os/studio/registry)                 |
+| components (API reference) | [Components API reference](/reference-api/schema/components) |
+
+

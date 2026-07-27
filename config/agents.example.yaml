@@ -1,0 +1,120 @@
+# config/agents.example.yaml
+# Template completo com exemplos comentados
+
+# Variáveis globais (herdadas por todos)
+globals:
+  company_name: "{{COMPANY_NAME}}"
+  company_description: "{{COMPANY_DESCRIPTION}}"
+  default_model: "gpt-4o-mini"
+
+  default_features:
+    memory: true
+    rag: true
+    web_search: false
+    add_datetime: true
+    add_history: true
+    num_history_runs: 10
+    markdown: true
+    debug_mode: false
+
+agents:
+  # ==================== SUPER ADMIN ====================
+  - name: "Super Admin Assistant"
+    department: null  # null = acessa TODO o RAG
+    model: "gpt-4o"
+    description: "Assistente executivo com visão cross-departamental"
+
+    features:
+      memory: true
+      rag: true
+      web_search: true
+      add_history: true
+      num_history_runs: 20
+
+    tools:
+      - name: "DuckDuckGoTools"
+      - name: "SmartPandasTools"
+      - name: "FileTools"
+        kwargs:
+          base_dir: "."
+      - name: "PythonTools"
+        kwargs:
+          base_dir: "tmp/workspace"
+
+    skills:
+      - "shared/data-analysis"
+      - "shared/web-research"
+      - "shared/document-analysis"
+
+    mcps: []
+
+    instructions:
+      - "Você é o assistente executivo da {{company_name}}."
+      - "{{company_description}}"
+      - "Você tem acesso a TODOS os dados da empresa."
+      - "Use esse privilégio com responsabilidade."
+
+  # ==================== GENERAL ====================
+  - name: "General Assistant"
+    department: "geral"
+    model: "gpt-4o-mini"
+    description: "Assistente geral para tarefas públicas"
+
+    features:
+      memory: true
+      rag: false  # SEM acesso ao knowledge base
+      web_search: true
+      add_history: true
+      num_history_runs: 10
+
+    tools:
+      - name: "DuckDuckGoTools"
+      - name: "SmartPandasTools"
+      - name: "FileTools"
+      - name: "PythonTools"
+
+    skills:
+      - "shared/data-analysis"
+      - "shared/web-research"
+
+    mcps: []
+
+    instructions:
+      - "Você é o assistente geral da {{company_name}}."
+      - "{{company_description}}"
+      - "Ajuda com tarefas genéricas, pesquisa web e análise de dados."
+      - "Você NÃO tem acesso a documentos internos confidenciais."
+
+  # ==================== MARKETING ====================
+  - name: "Marketing Assistant"
+    department: "marketing"
+    model: "gpt-4o-mini"
+    description: "Especialista em campanhas, métricas e estratégia"
+
+    features:
+      memory: true
+      rag: true
+      web_search: true
+      add_history: true
+      num_history_runs: 15
+
+    tools:
+      - name: "DuckDuckGoTools"
+      - name: "SmartPandasTools"
+      - name: "FileTools"
+      - name: "PythonTools"
+
+    skills:
+      - "shared/data-analysis"
+      - "shared/web-research"
+      - "marketing/criar-campanha"
+      - "marketing/analisar-metricas"
+
+    mcps: []
+
+    instructions:
+      - "Você é o assistente de Marketing da {{company_name}}."
+      - "{{company_description}}"
+      - "Você é especialista em criar campanhas criativas e analisar métricas."
+      - "Você tem acesso exclusivo aos dados de Marketing no RAG."
+      - "Use web_search para pesquisar tendências atuais de mercado."

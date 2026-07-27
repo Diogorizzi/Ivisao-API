@@ -1,0 +1,45 @@
+[project]
+name = "dartha-api-v3"
+version = "0.1.0"
+description = "Agno-based multi-tenant AI agent API platform"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "agno[chromadb,google,os]>=2.6.18",
+    "boto3>=1.35.0",
+    "fastapi>=0.133.1",
+    "openai>=2.24.0",
+    "anthropic>=0.45.0",
+    "google-genai",
+    "groq>=0.11.0",
+    "uvicorn>=0.41.0",
+    "ag-ui-protocol>=0.1.15",
+    "pydantic-settings>=2.7.0",
+    "ddgs",
+    "pandas>=3.0.1",
+    "lancedb>=0.30.0",
+    "mcp>=1.26.0",
+    "markitdown[docx,xlsx,pptx,xls]>=0.1.5",
+    "openpyxl>=3.1.5",
+    "python-docx>=1.2.0",
+    "tabulate>=0.10.0",
+    "chromadb>=1.5.5",
+    "pypdf>=6.9.2",
+    "pytest>=7.0.0",
+    "python-jose[cryptography]>=3.5.0",
+    "passlib[bcrypt]>=1.7.4",
+    "psycopg[binary]>=3.1.0",
+    "cryptography>=46.0.5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[dependency-groups]
+dev = [
+    "pytest-asyncio>=1.3.0",
+]

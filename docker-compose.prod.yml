@@ -1,0 +1,77 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: agent_api_postgres
+    environment:
+      POSTGRES_USER: agentapi
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: agentapi
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentapi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # No port exposed — accessible only within Docker network
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: agent_api_chromadb
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+    volumes:
+      - chroma_data:/data
+    restart: unless-stopped
+    # No port exposed — accessible only within Docker network
+
+  api:
+    build: .
+    container_name: agent_api
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://agentapi:${POSTGRES_PASSWORD}@db:5432/agentapi
+      SQLITE_DB_PATH: /app/data/agno.db
+      CHROMA_HOST: chromadb
+      CHROMA_PORT: "8000"
+    volumes:
+      - app_data:/app/data
+      - ./config:/app/config:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    # No port exposed — accessible only via nginx
+
+  nginx:
+    image: nginx:alpine
+    container_name: agent_api_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/active.conf:/etc/nginx/conf.d/app.conf:ro
+      - certbot_certs:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    container_name: agent_api_certbot
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    # Executa renovação automática a cada 12h
+    entrypoint: /bin/sh -c "trap exit TERM; while :; do certbot renew --quiet; sleep 12h & wait $${!}; done"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  chroma_data:
+  app_data:
+  certbot_certs:
+  certbot_www:

@@ -1,0 +1,19224 @@
+/reference-api/schema/
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# AgentOS API Overview
+
+> Complete API reference for interacting with AgentOS programmatically
+
+Welcome to the comprehensive API reference for the Agno AgentOS API. This RESTful API enables you to programmatically interact with your AgentOS instance, manage agents, teams, and workflows, and integrate AgentOS capabilities into your applications.
+
+## Authentication
+
+AgentOS supports bearer-token authentication via a single Security Key.
+
+* When `OS_SECURITY_KEY` environment variable is set on the server, all routes require:
+
+```bash  theme={null}
+Authorization: Bearer <OS_SECURITY_KEY>
+```
+
+* When `OS_SECURITY_KEY` is not set, authentication is disabled for that instance.
+
+See the dedicated guide: [Secure your AgentOS with a Security Key](/agent-os/security).
+
+## Core Resources
+
+The AgentOS API is organized around several key resources:
+
+<CardGroup cols={3}>
+  <Card title="Agents" icon="robot" href="/reference-api/schema/agents/list-all-agents">
+    Create, manage, and execute individual agent runs with tools and knowledge
+  </Card>
+
+  <Card title="Teams" icon="users" href="/reference-api/schema/teams/list-all-teams">
+    Orchestrate multiple agents working together on complex tasks
+  </Card>
+
+  <Card title="Workflows" icon="diagram-project" href="/reference-api/schema/workflows/list-all-workflows">
+    Define and execute multi-step automated processes
+  </Card>
+
+  <Card title="Sessions" icon="clock" href="/reference-api/schema/sessions/list-sessions">
+    Track conversation history and maintain context across interactions
+  </Card>
+
+  <Card title="Memory" icon="brain" href="/reference-api/schema/memory/list-memories">
+    Store and retrieve persistent memories for personalized interactions
+  </Card>
+
+  <Card title="Knowledge" icon="book" href="/reference-api/schema/knowledge/list-content">
+    Upload, manage, and query knowledge bases for your agents
+  </Card>
+
+  <Card title="Evals" icon="chart-bar" href="/reference-api/schema/evals/list-evaluation-runs">
+    Run evaluations and track performance metrics for your agents
+  </Card>
+</CardGroup>
+
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# API Information
+
+> Get basic information about this AgentOS API instance, including:
+
+- API metadata and version
+- Available capabilities overview
+- Links to key endpoints and documentation
+
+
+
+## OpenAPI
+
+````yaml get /
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /:
+    get:
+      tags:
+        - Home
+      summary: API Information
+      description: |-
+        Get basic information about this AgentOS API instance, including:
+
+        - API metadata and version
+        - Available capabilities overview
+        - Links to key endpoints and documentation
+      operationId: get_api_info
+      responses:
+        '200':
+          description: API information retrieved successfully
+          content:
+            application/json:
+              schema: {}
+              examples:
+                home:
+                  summary: Example home response
+                  value:
+                    name: AgentOS API
+                    id: demo-os
+                    version: 1.0.0
+
+````
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Health Check
+
+> Check the health status of the AgentOS API. Returns a simple status indicator.
+
+
+
+## OpenAPI
+
+````yaml get /health
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health Check
+      description: >-
+        Check the health status of the AgentOS API. Returns a simple status
+        indicator.
+      operationId: health_check
+      responses:
+        '200':
+          description: API is healthy and operational
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: ok
+                instantiated_at: '2025-06-10T12:00:00Z'
+components:
+  schemas:
+    HealthResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+          description: Health status of the service
+        instantiated_at:
+          type: string
+          format: date-time
+          title: Instantiated At
+          description: Timestamp when service was instantiated
+      type: object
+      required:
+        - status
+        - instantiated_at
+      title: HealthResponse
+      example:
+        instantiated_at: '2025-06-10T12:00:00Z'
+        status: ok
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get OS Configuration
+
+> Retrieve the complete configuration of the AgentOS instance, including:
+
+- Available models and databases
+- Registered agents, teams, and workflows
+- Chat, session, memory, knowledge, and evaluation configurations
+- Available interfaces and their routes
+
+
+
+## OpenAPI
+
+````yaml get /config
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /config:
+    get:
+      tags:
+        - Core
+      summary: Get OS Configuration
+      description: |-
+        Retrieve the complete configuration of the AgentOS instance, including:
+
+        - Available models and databases
+        - Registered agents, teams, and workflows
+        - Chat, session, memory, knowledge, and evaluation configurations
+        - Available interfaces and their routes
+      operationId: get_config
+      responses:
+        '200':
+          description: OS configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigResponse'
+              example:
+                id: demo
+                description: Example AgentOS configuration
+                available_models: []
+                databases:
+                  - 9c884dc4-9066-448c-9074-ef49ec7eb73c
+                session:
+                  dbs:
+                    - db_id: 9c884dc4-9066-448c-9074-ef49ec7eb73c
+                      domain_config:
+                        display_name: Sessions
+                metrics:
+                  dbs:
+                    - db_id: 9c884dc4-9066-448c-9074-ef49ec7eb73c
+                      domain_config:
+                        display_name: Metrics
+                memory:
+                  dbs:
+                    - db_id: 9c884dc4-9066-448c-9074-ef49ec7eb73c
+                      domain_config:
+                        display_name: Memory
+                knowledge:
+                  dbs:
+                    - db_id: 9c884dc4-9066-448c-9074-ef49ec7eb73c
+                      domain_config:
+                        display_name: Knowledge
+                evals:
+                  dbs:
+                    - db_id: 9c884dc4-9066-448c-9074-ef49ec7eb73c
+                      domain_config:
+                        display_name: Evals
+                agents:
+                  - id: main-agent
+                    name: Main Agent
+                    db_id: 9c884dc4-9066-448c-9074-ef49ec7eb73c
+                teams: []
+                workflows: []
+                interfaces: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    ConfigResponse:
+      properties:
+        os_id:
+          type: string
+          title: Os Id
+          description: Unique identifier for the OS instance
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the OS instance
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the OS instance
+        available_models:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Available Models
+          description: List of available models
+        os_database:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Os Database
+          description: ID of the database used for the OS instance
+        databases:
+          items:
+            type: string
+          type: array
+          title: Databases
+          description: List of database IDs used by the components of the OS instance
+        chat:
+          anyOf:
+            - $ref: '#/components/schemas/ChatConfig'
+            - type: 'null'
+          description: Chat configuration
+        session:
+          anyOf:
+            - $ref: '#/components/schemas/SessionConfig'
+            - type: 'null'
+          description: Session configuration
+        metrics:
+          anyOf:
+            - $ref: '#/components/schemas/MetricsConfig'
+            - type: 'null'
+          description: Metrics configuration
+        memory:
+          anyOf:
+            - $ref: '#/components/schemas/MemoryConfig'
+            - type: 'null'
+          description: Memory configuration
+        knowledge:
+          anyOf:
+            - $ref: '#/components/schemas/KnowledgeConfig'
+            - type: 'null'
+          description: Knowledge configuration
+        evals:
+          anyOf:
+            - $ref: '#/components/schemas/EvalsConfig'
+            - type: 'null'
+          description: Evaluations configuration
+        traces:
+          anyOf:
+            - $ref: '#/components/schemas/TracesConfig'
+            - type: 'null'
+          description: Traces configuration
+        agents:
+          items:
+            $ref: '#/components/schemas/AgentSummaryResponse'
+          type: array
+          title: Agents
+          description: List of registered agents
+        teams:
+          items:
+            $ref: '#/components/schemas/TeamSummaryResponse'
+          type: array
+          title: Teams
+          description: List of registered teams
+        workflows:
+          items:
+            $ref: '#/components/schemas/WorkflowSummaryResponse'
+          type: array
+          title: Workflows
+          description: List of registered workflows
+        interfaces:
+          items:
+            $ref: '#/components/schemas/InterfaceResponse'
+          type: array
+          title: Interfaces
+          description: List of available interfaces
+      type: object
+      required:
+        - os_id
+        - databases
+        - agents
+        - teams
+        - workflows
+        - interfaces
+      title: ConfigResponse
+      description: Response schema for the general config endpoint
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ChatConfig:
+      properties:
+        quick_prompts:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          type: object
+          title: Quick Prompts
+      type: object
+      required:
+        - quick_prompts
+      title: ChatConfig
+      description: Configuration for the Chat page of the AgentOS
+    SessionConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+        dbs:
+          anyOf:
+            - items:
+                $ref: '#/components/schemas/DatabaseConfig_SessionDomainConfig_'
+              type: array
+            - type: 'null'
+          title: Dbs
+      type: object
+      title: SessionConfig
+      description: Configuration for the Session domain of the AgentOS
+    MetricsConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+        dbs:
+          anyOf:
+            - items:
+                $ref: '#/components/schemas/DatabaseConfig_MetricsDomainConfig_'
+              type: array
+            - type: 'null'
+          title: Dbs
+      type: object
+      title: MetricsConfig
+      description: Configuration for the Metrics domain of the AgentOS
+    MemoryConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+        dbs:
+          anyOf:
+            - items:
+                $ref: '#/components/schemas/DatabaseConfig_MemoryDomainConfig_'
+              type: array
+            - type: 'null'
+          title: Dbs
+      type: object
+      title: MemoryConfig
+      description: Configuration for the Memory domain of the AgentOS
+    KnowledgeConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+        dbs:
+          anyOf:
+            - items:
+                $ref: '#/components/schemas/KnowledgeDatabaseConfig'
+              type: array
+            - type: 'null'
+          title: Dbs
+        knowledge_instances:
+          anyOf:
+            - items:
+                $ref: '#/components/schemas/KnowledgeInstanceConfig'
+              type: array
+            - type: 'null'
+          title: Knowledge Instances
+      type: object
+      title: KnowledgeConfig
+      description: Configuration for the Knowledge domain of the AgentOS
+    EvalsConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+        available_models:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Available Models
+        dbs:
+          anyOf:
+            - items:
+                $ref: '#/components/schemas/DatabaseConfig_EvalsDomainConfig_'
+              type: array
+            - type: 'null'
+          title: Dbs
+      type: object
+      title: EvalsConfig
+      description: Configuration for the Evals domain of the AgentOS
+    TracesConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+        dbs:
+          anyOf:
+            - items:
+                $ref: '#/components/schemas/DatabaseConfig_TracesDomainConfig_'
+              type: array
+            - type: 'null'
+          title: Dbs
+      type: object
+      title: TracesConfig
+      description: Configuration for the Traces domain of the AgentOS
+    AgentSummaryResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+          description: Unique identifier for the agent
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the agent
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the agent
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+          description: Database identifier
+      type: object
+      title: AgentSummaryResponse
+    TeamSummaryResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+          description: Unique identifier for the team
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the team
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the team
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+          description: Database identifier
+        mode:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Mode
+          description: Team execution mode (coordinate, route, broadcast, tasks)
+      type: object
+      title: TeamSummaryResponse
+    WorkflowSummaryResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+          description: Unique identifier for the workflow
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the workflow
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the workflow
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+          description: Database identifier
+        is_component:
+          type: boolean
+          title: Is Component
+          description: Whether this workflow was created via Builder
+          default: false
+        current_version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Current Version
+          description: Current published version number
+        stage:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Stage
+          description: Stage of the loaded config (draft/published)
+      type: object
+      title: WorkflowSummaryResponse
+    InterfaceResponse:
+      properties:
+        type:
+          type: string
+          title: Type
+          description: Type of the interface
+        version:
+          type: string
+          title: Version
+          description: Version of the interface
+        route:
+          type: string
+          title: Route
+          description: API route path
+      type: object
+      required:
+        - type
+        - version
+        - route
+      title: InterfaceResponse
+    DatabaseConfig_SessionDomainConfig_:
+      properties:
+        db_id:
+          type: string
+          title: Db Id
+        domain_config:
+          anyOf:
+            - $ref: '#/components/schemas/SessionDomainConfig'
+            - type: 'null'
+        tables:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Tables
+      type: object
+      required:
+        - db_id
+      title: DatabaseConfig[SessionDomainConfig]
+    DatabaseConfig_MetricsDomainConfig_:
+      properties:
+        db_id:
+          type: string
+          title: Db Id
+        domain_config:
+          anyOf:
+            - $ref: '#/components/schemas/MetricsDomainConfig'
+            - type: 'null'
+        tables:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Tables
+      type: object
+      required:
+        - db_id
+      title: DatabaseConfig[MetricsDomainConfig]
+    DatabaseConfig_MemoryDomainConfig_:
+      properties:
+        db_id:
+          type: string
+          title: Db Id
+        domain_config:
+          anyOf:
+            - $ref: '#/components/schemas/MemoryDomainConfig'
+            - type: 'null'
+        tables:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Tables
+      type: object
+      required:
+        - db_id
+      title: DatabaseConfig[MemoryDomainConfig]
+    KnowledgeDatabaseConfig:
+      properties:
+        db_id:
+          type: string
+          title: Db Id
+        domain_config:
+          anyOf:
+            - $ref: '#/components/schemas/KnowledgeDomainConfig'
+            - type: 'null'
+        tables:
+          items:
+            type: string
+          type: array
+          title: Tables
+          default: []
+      type: object
+      required:
+        - db_id
+      title: KnowledgeDatabaseConfig
+      description: Configuration for a knowledge database with its tables
+    KnowledgeInstanceConfig:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+        db_id:
+          type: string
+          title: Db Id
+        table:
+          type: string
+          title: Table
+      type: object
+      required:
+        - id
+        - name
+        - db_id
+        - table
+      title: KnowledgeInstanceConfig
+      description: Configuration for a single knowledge instance
+    DatabaseConfig_EvalsDomainConfig_:
+      properties:
+        db_id:
+          type: string
+          title: Db Id
+        domain_config:
+          anyOf:
+            - $ref: '#/components/schemas/EvalsDomainConfig'
+            - type: 'null'
+        tables:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Tables
+      type: object
+      required:
+        - db_id
+      title: DatabaseConfig[EvalsDomainConfig]
+    DatabaseConfig_TracesDomainConfig_:
+      properties:
+        db_id:
+          type: string
+          title: Db Id
+        domain_config:
+          anyOf:
+            - $ref: '#/components/schemas/TracesDomainConfig'
+            - type: 'null'
+        tables:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Tables
+      type: object
+      required:
+        - db_id
+      title: DatabaseConfig[TracesDomainConfig]
+    SessionDomainConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+      type: object
+      title: SessionDomainConfig
+      description: Configuration for the Session domain of the AgentOS
+    MetricsDomainConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+      type: object
+      title: MetricsDomainConfig
+      description: Configuration for the Metrics domain of the AgentOS
+    MemoryDomainConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+      type: object
+      title: MemoryDomainConfig
+      description: Configuration for the Memory domain of the AgentOS
+    KnowledgeDomainConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+      type: object
+      title: KnowledgeDomainConfig
+      description: Configuration for the Knowledge domain of the AgentOS
+    EvalsDomainConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+        available_models:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Available Models
+      type: object
+      title: EvalsDomainConfig
+      description: Configuration for the Evals domain of the AgentOS
+    TracesDomainConfig:
+      properties:
+        display_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Display Name
+      type: object
+      title: TracesDomainConfig
+      description: Configuration for the Traces domain of the AgentOS
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Available Models
+
+> Retrieve a list of all unique models currently used by agents and teams in this OS instance. This includes the model ID and provider information for each model.
+
+
+
+## OpenAPI
+
+````yaml get /models
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /models:
+    get:
+      tags:
+        - Core
+      summary: Get Available Models
+      description: >-
+        Retrieve a list of all unique models currently used by agents and teams
+        in this OS instance. This includes the model ID and provider information
+        for each model.
+      operationId: get_models
+      responses:
+        '200':
+          description: List of models retrieved successfully
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Model'
+                type: array
+                title: Response Get Models
+              example:
+                - id: gpt-4
+                  provider: openai
+                - id: claude-3-sonnet
+                  provider: anthropic
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    Model:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+          description: Model identifier
+        provider:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Provider
+          description: Model provider name
+      type: object
+      title: Model
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# List Agent Runs
+
+> List runs for an agent within a session, optionally filtered by status.
+
+Useful for monitoring background runs and viewing run history.
+
+
+
+## OpenAPI
+
+````yaml get /agents/{agent_id}/runs
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /agents/{agent_id}/runs:
+    get:
+      tags:
+        - Agents
+      summary: List Agent Runs
+      description: |-
+        List runs for an agent within a session, optionally filtered by status.
+
+        Useful for monitoring background runs and viewing run history.
+      operationId: list_agent_runs
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+        - name: session_id
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Session ID to list runs for
+            title: Session Id
+          description: Session ID to list runs for
+        - name: status
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Filter by run status (PENDING, RUNNING, COMPLETED, ERROR)
+            title: Status
+          description: Filter by run status (PENDING, RUNNING, COMPLETED, ERROR)
+      responses:
+        '200':
+          description: List of runs retrieved successfully
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Agent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Create Agent Run
+
+> Execute an agent with a message and optional media files. Supports both streaming and non-streaming responses.
+
+**Features:**
+- Text message input with optional session management
+- Multi-media support: images (PNG, JPEG, WebP), audio (WAV, MP3), video (MP4, WebM, etc.)
+- Document processing: PDF, CSV, DOCX, TXT, JSON
+- Real-time streaming responses with Server-Sent Events (SSE)
+- User and session context preservation
+
+**Streaming Response:**
+When `stream=true`, returns SSE events with `event` and `data` fields.
+
+
+
+## OpenAPI
+
+````yaml post /agents/{agent_id}/runs
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /agents/{agent_id}/runs:
+    post:
+      tags:
+        - Agents
+      summary: Create Agent Run
+      description: >-
+        Execute an agent with a message and optional media files. Supports both
+        streaming and non-streaming responses.
+
+
+        **Features:**
+
+        - Text message input with optional session management
+
+        - Multi-media support: images (PNG, JPEG, WebP), audio (WAV, MP3), video
+        (MP4, WebM, etc.)
+
+        - Document processing: PDF, CSV, DOCX, TXT, JSON
+
+        - Real-time streaming responses with Server-Sent Events (SSE)
+
+        - User and session context preservation
+
+
+        **Streaming Response:**
+
+        When `stream=true`, returns SSE events with `event` and `data` fields.
+      operationId: create_agent_run
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_create_agent_run'
+      responses:
+        '200':
+          description: Agent run executed successfully
+          content:
+            application/json:
+              schema: {}
+            text/event-stream:
+              examples:
+                event_stream:
+                  summary: Example event stream response
+                  value: |+
+                    event: RunStarted
+                    data: {"content": "Hello!", "run_id": "123..."}
+
+        '400':
+          description: Invalid request or unsupported file type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Agent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    Body_create_agent_run:
+      properties:
+        message:
+          type: string
+          title: Message
+        stream:
+          type: boolean
+          title: Stream
+          default: true
+        session_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Session Id
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+        files:
+          anyOf:
+            - items:
+                type: string
+                contentMediaType: application/octet-stream
+              type: array
+            - type: 'null'
+          title: Files
+        version:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Version
+        background:
+          type: boolean
+          title: Background
+          default: false
+      type: object
+      required:
+        - message
+      title: Body_create_agent_run
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Cancel Agent Run
+
+> Cancel a currently executing agent run. This will attempt to stop the agent's execution gracefully.
+
+**Note:** Cancellation may not be immediate for all operations.
+
+
+
+## OpenAPI
+
+````yaml post /agents/{agent_id}/runs/{run_id}/cancel
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /agents/{agent_id}/runs/{run_id}/cancel:
+    post:
+      tags:
+        - Agents
+      summary: Cancel Agent Run
+      description: >-
+        Cancel a currently executing agent run. This will attempt to stop the
+        agent's execution gracefully.
+
+
+        **Note:** Cancellation may not be immediate for all operations.
+      operationId: cancel_agent_run
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Agent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to cancel run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Continue Agent Run
+
+> Continue a paused or incomplete agent run with updated tool results.
+
+**Use Cases:**
+- Resume execution after tool approval/rejection
+- Provide manual tool execution results
+- Resume after admin approval (tools can be empty; resolution fetched from DB)
+
+**Tools Parameter:**
+JSON string containing array of tool execution objects with results.
+Can be empty when an admin-required approval has been resolved.
+
+
+
+## OpenAPI
+
+````yaml post /agents/{agent_id}/runs/{run_id}/continue
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /agents/{agent_id}/runs/{run_id}/continue:
+    post:
+      tags:
+        - Agents
+      summary: Continue Agent Run
+      description: >-
+        Continue a paused or incomplete agent run with updated tool results.
+
+
+        **Use Cases:**
+
+        - Resume execution after tool approval/rejection
+
+        - Provide manual tool execution results
+
+        - Resume after admin approval (tools can be empty; resolution fetched
+        from DB)
+
+
+        **Tools Parameter:**
+
+        JSON string containing array of tool execution objects with results.
+
+        Can be empty when an admin-required approval has been resolved.
+      operationId: continue_agent_run
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Run Id
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_continue_agent_run'
+      responses:
+        '200':
+          description: Agent run continued successfully
+          content:
+            application/json:
+              schema: {}
+            text/event-stream:
+              example: |+
+                event: RunContent
+                data: {"created_at": 1757348314, "run_id": "123..."}
+
+        '400':
+          description: Invalid JSON in tools field or invalid tool structure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '403':
+          description: >-
+            Run has a pending admin approval and cannot be continued by the user
+            yet.
+        '404':
+          description: Agent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: >-
+            Run is not paused (e.g. run is already running, continued, or
+            errored). Only PAUSED runs can be continued.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    Body_continue_agent_run:
+      properties:
+        tools:
+          type: string
+          title: Tools
+          default: ''
+        session_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Session Id
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+        stream:
+          type: boolean
+          title: Stream
+          default: true
+      type: object
+      title: Body_continue_agent_run
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# List All Agents
+
+> Retrieve a comprehensive list of all agents configured in this OS instance.
+
+**Returns:**
+- Agent metadata (ID, name, description)
+- Model configuration and capabilities
+- Available tools and their configurations
+- Session, knowledge, memory, and reasoning settings
+- Only meaningful (non-default) configurations are included
+
+
+
+## OpenAPI
+
+````yaml get /agents
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /agents:
+    get:
+      tags:
+        - Agents
+      summary: List All Agents
+      description: >-
+        Retrieve a comprehensive list of all agents configured in this OS
+        instance.
+
+
+        **Returns:**
+
+        - Agent metadata (ID, name, description)
+
+        - Model configuration and capabilities
+
+        - Available tools and their configurations
+
+        - Session, knowledge, memory, and reasoning settings
+
+        - Only meaningful (non-default) configurations are included
+      operationId: get_agents
+      responses:
+        '200':
+          description: List of agents retrieved successfully
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AgentResponse'
+                type: array
+                title: Response Get Agents
+              example:
+                - id: main-agent
+                  name: Main Agent
+                  db_id: c6bf0644-feb8-4930-a305-380dae5ad6aa
+                  model:
+                    name: OpenAIChat
+                    model: gpt-4o
+                    provider: OpenAI
+                  sessions:
+                    session_table: agno_sessions
+                  knowledge:
+                    knowledge_table: main_knowledge
+                  system_message:
+                    markdown: true
+                    add_datetime_to_context: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    AgentResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+        role:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Role
+        model:
+          anyOf:
+            - $ref: '#/components/schemas/ModelResponse'
+            - type: 'null'
+        tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Tools
+        sessions:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Sessions
+        knowledge:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Knowledge
+        memory:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Memory
+        reasoning:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Reasoning
+        default_tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Default Tools
+        system_message:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: System Message
+        extra_messages:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Extra Messages
+        response_settings:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Settings
+        introduction:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Introduction
+        streaming:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Streaming
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+        input_schema:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Schema
+        is_component:
+          type: boolean
+          title: Is Component
+          default: false
+        current_version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Current Version
+        stage:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Stage
+      type: object
+      title: AgentResponse
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ModelResponse:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the model
+        model:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model
+          description: Model identifier
+        provider:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Provider
+          description: Model provider name
+      type: object
+      title: ModelResponse
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Agent Details
+
+> Retrieve detailed configuration and capabilities of a specific agent.
+
+**Returns comprehensive agent information including:**
+- Model configuration and provider details
+- Complete tool inventory and configurations
+- Session management settings
+- Knowledge base and memory configurations
+- Reasoning capabilities and settings
+- System prompts and response formatting options
+
+
+
+## OpenAPI
+
+````yaml get /agents/{agent_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /agents/{agent_id}:
+    get:
+      tags:
+        - Agents
+      summary: Get Agent Details
+      description: |-
+        Retrieve detailed configuration and capabilities of a specific agent.
+
+        **Returns comprehensive agent information including:**
+        - Model configuration and provider details
+        - Complete tool inventory and configurations
+        - Session management settings
+        - Knowledge base and memory configurations
+        - Reasoning capabilities and settings
+        - System prompts and response formatting options
+      operationId: get_agent
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+      responses:
+        '200':
+          description: Agent details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentResponse'
+              example:
+                id: main-agent
+                name: Main Agent
+                db_id: 9e064c70-6821-4840-a333-ce6230908a70
+                model:
+                  name: OpenAIChat
+                  model: gpt-4o
+                  provider: OpenAI
+                sessions:
+                  session_table: agno_sessions
+                knowledge:
+                  knowledge_table: main_knowledge
+                system_message:
+                  markdown: true
+                  add_datetime_to_context: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Agent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    AgentResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+        role:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Role
+        model:
+          anyOf:
+            - $ref: '#/components/schemas/ModelResponse'
+            - type: 'null'
+        tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Tools
+        sessions:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Sessions
+        knowledge:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Knowledge
+        memory:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Memory
+        reasoning:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Reasoning
+        default_tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Default Tools
+        system_message:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: System Message
+        extra_messages:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Extra Messages
+        response_settings:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Settings
+        introduction:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Introduction
+        streaming:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Streaming
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+        input_schema:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Schema
+        is_component:
+          type: boolean
+          title: Is Component
+          default: false
+        current_version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Current Version
+        stage:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Stage
+      type: object
+      title: AgentResponse
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ModelResponse:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the model
+        model:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model
+          description: Model identifier
+        provider:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Provider
+          description: Model provider name
+      type: object
+      title: ModelResponse
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Agent Run
+
+> Retrieve the status and output of an agent run. Use this to poll for background run completion.
+
+Requires the `session_id` that was returned when the run was created.
+
+
+
+## OpenAPI
+
+````yaml get /agents/{agent_id}/runs/{run_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /agents/{agent_id}/runs/{run_id}:
+    get:
+      tags:
+        - Agents
+      summary: Get Agent Run
+      description: >-
+        Retrieve the status and output of an agent run. Use this to poll for
+        background run completion.
+
+
+        Requires the `session_id` that was returned when the run was created.
+      operationId: get_agent_run
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Run Id
+        - name: session_id
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Session ID for the run
+            title: Session Id
+          description: Session ID for the run
+      responses:
+        '200':
+          description: Run output retrieved successfully
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Agent or run not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# List Team Runs
+
+> List runs for a team within a session, optionally filtered by status.
+
+Useful for monitoring background runs and viewing run history.
+
+
+
+## OpenAPI
+
+````yaml get /teams/{team_id}/runs
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /teams/{team_id}/runs:
+    get:
+      tags:
+        - Teams
+      summary: List Team Runs
+      description: |-
+        List runs for a team within a session, optionally filtered by status.
+
+        Useful for monitoring background runs and viewing run history.
+      operationId: list_team_runs
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Team Id
+        - name: session_id
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Session ID to list runs for
+            title: Session Id
+          description: Session ID to list runs for
+        - name: status
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Filter by run status (PENDING, RUNNING, COMPLETED, ERROR)
+            title: Status
+          description: Filter by run status (PENDING, RUNNING, COMPLETED, ERROR)
+      responses:
+        '200':
+          description: List of runs retrieved successfully
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Create Team Run
+
+> Execute a team collaboration with multiple agents working together on a task.
+
+**Features:**
+- Text message input with optional session management
+- Multi-media support: images (PNG, JPEG, WebP), audio (WAV, MP3), video (MP4, WebM, etc.)
+- Document processing: PDF, CSV, DOCX, TXT, JSON
+- Real-time streaming responses with Server-Sent Events (SSE)
+- User and session context preservation
+
+**Streaming Response:**
+When `stream=true`, returns SSE events with `event` and `data` fields.
+
+
+
+## OpenAPI
+
+````yaml post /teams/{team_id}/runs
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /teams/{team_id}/runs:
+    post:
+      tags:
+        - Teams
+      summary: Create Team Run
+      description: >-
+        Execute a team collaboration with multiple agents working together on a
+        task.
+
+
+        **Features:**
+
+        - Text message input with optional session management
+
+        - Multi-media support: images (PNG, JPEG, WebP), audio (WAV, MP3), video
+        (MP4, WebM, etc.)
+
+        - Document processing: PDF, CSV, DOCX, TXT, JSON
+
+        - Real-time streaming responses with Server-Sent Events (SSE)
+
+        - User and session context preservation
+
+
+        **Streaming Response:**
+
+        When `stream=true`, returns SSE events with `event` and `data` fields.
+      operationId: create_team_run
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Team Id
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_create_team_run'
+      responses:
+        '200':
+          description: Team run executed successfully
+          content:
+            application/json:
+              schema: {}
+            text/event-stream:
+              example: |+
+                event: RunStarted
+                data: {"content": "Hello!", "run_id": "123..."}
+
+        '400':
+          description: Invalid request or unsupported file type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    Body_create_team_run:
+      properties:
+        message:
+          type: string
+          title: Message
+        stream:
+          type: boolean
+          title: Stream
+          default: true
+        monitor:
+          type: boolean
+          title: Monitor
+          default: true
+        session_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Session Id
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+        files:
+          anyOf:
+            - items:
+                type: string
+                contentMediaType: application/octet-stream
+              type: array
+            - type: 'null'
+          title: Files
+        version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Version
+        background:
+          type: boolean
+          title: Background
+          default: false
+      type: object
+      required:
+        - message
+      title: Body_create_team_run
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Cancel Team Run
+
+> Cancel a currently executing team run. This will attempt to stop the team's execution gracefully.
+
+**Note:** Cancellation may not be immediate for all operations.
+
+
+
+## OpenAPI
+
+````yaml post /teams/{team_id}/runs/{run_id}/cancel
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /teams/{team_id}/runs/{run_id}/cancel:
+    post:
+      tags:
+        - Teams
+      summary: Cancel Team Run
+      description: >-
+        Cancel a currently executing team run. This will attempt to stop the
+        team's execution gracefully.
+
+
+        **Note:** Cancellation may not be immediate for all operations.
+      operationId: cancel_team_run
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Team Id
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to cancel team run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Cancel Team Run
+
+> Cancel a currently executing team run. This will attempt to stop the team's execution gracefully.
+
+**Note:** Cancellation may not be immediate for all operations.
+
+
+
+## OpenAPI
+
+````yaml post /teams/{team_id}/runs/{run_id}/cancel
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /teams/{team_id}/runs/{run_id}/cancel:
+    post:
+      tags:
+        - Teams
+      summary: Cancel Team Run
+      description: >-
+        Cancel a currently executing team run. This will attempt to stop the
+        team's execution gracefully.
+
+
+        **Note:** Cancellation may not be immediate for all operations.
+      operationId: cancel_team_run
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Team Id
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to cancel team run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Team Details
+
+> Retrieve detailed configuration and member information for a specific team.
+
+
+
+## OpenAPI
+
+````yaml get /teams/{team_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /teams/{team_id}:
+    get:
+      tags:
+        - Teams
+      summary: Get Team Details
+      description: >-
+        Retrieve detailed configuration and member information for a specific
+        team.
+      operationId: get_team
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Team Id
+      responses:
+        '200':
+          description: Team details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamResponse'
+              example:
+                team_id: basic-team
+                name: Basic Team
+                mode: coordinate
+                model:
+                  name: OpenAIChat
+                  model: gpt-4o
+                  provider: OpenAI
+                tools:
+                  - name: transfer_task_to_member
+                    description: >-
+                      Use this function to transfer a task to the selected team
+                      member.
+
+                      You must provide a clear and concise description of the
+                      task the member should achieve AND the expected output.
+                    parameters:
+                      type: object
+                      properties:
+                        member_id:
+                          type: string
+                          description: >-
+                            (str) The ID of the member to transfer the task to.
+                            Use only the ID of the member, not the ID of the
+                            team followed by the ID of the member.
+                        task_description:
+                          type: string
+                          description: >-
+                            (str) A clear and concise description of the task
+                            the member should achieve.
+                        expected_output:
+                          type: string
+                          description: >-
+                            (str) The expected output from the member
+                            (optional).
+                      additionalProperties: false
+                      required:
+                        - member_id
+                        - task_description
+                members:
+                  - agent_id: basic-agent
+                    name: Basic Agent
+                    model:
+                      name: OpenAIChat
+                      model: gpt-4o
+                      provider: OpenAI gpt-4o
+                    memory:
+                      app_name: Memory
+                      model:
+                        name: OpenAIChat
+                        model: gpt-4o
+                        provider: OpenAI
+                    session_table: agno_sessions
+                    memory_table: agno_memories
+                enable_agentic_context: false
+                memory:
+                  app_name: Memory
+                  model:
+                    name: OpenAIChat
+                    model: gpt-4o
+                    provider: OpenAI
+                async_mode: false
+                session_table: agno_sessions
+                memory_table: agno_memories
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    TeamResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+        role:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Role
+        mode:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Mode
+        model:
+          anyOf:
+            - $ref: '#/components/schemas/ModelResponse'
+            - type: 'null'
+        tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Tools
+        sessions:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Sessions
+        knowledge:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Knowledge
+        memory:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Memory
+        reasoning:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Reasoning
+        default_tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Default Tools
+        system_message:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: System Message
+        response_settings:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Settings
+        introduction:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Introduction
+        streaming:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Streaming
+        members:
+          anyOf:
+            - items:
+                anyOf:
+                  - $ref: '#/components/schemas/AgentResponse'
+                  - $ref: '#/components/schemas/TeamResponse'
+              type: array
+            - type: 'null'
+          title: Members
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+        input_schema:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Schema
+        is_component:
+          type: boolean
+          title: Is Component
+          default: false
+        current_version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Current Version
+        stage:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Stage
+      type: object
+      title: TeamResponse
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ModelResponse:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the model
+        model:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model
+          description: Model identifier
+        provider:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Provider
+          description: Model provider name
+      type: object
+      title: ModelResponse
+    AgentResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+        role:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Role
+        model:
+          anyOf:
+            - $ref: '#/components/schemas/ModelResponse'
+            - type: 'null'
+        tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Tools
+        sessions:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Sessions
+        knowledge:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Knowledge
+        memory:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Memory
+        reasoning:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Reasoning
+        default_tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Default Tools
+        system_message:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: System Message
+        extra_messages:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Extra Messages
+        response_settings:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Settings
+        introduction:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Introduction
+        streaming:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Streaming
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+        input_schema:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Schema
+        is_component:
+          type: boolean
+          title: Is Component
+          default: false
+        current_version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Current Version
+        stage:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Stage
+      type: object
+      title: AgentResponse
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Team Run
+
+> Retrieve the status and output of a team run. Use this to poll for background run completion.
+
+Requires the `session_id` that was returned when the run was created.
+
+
+
+## OpenAPI
+
+````yaml get /teams/{team_id}/runs/{run_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /teams/{team_id}/runs/{run_id}:
+    get:
+      tags:
+        - Teams
+      summary: Get Team Run
+      description: >-
+        Retrieve the status and output of a team run. Use this to poll for
+        background run completion.
+
+
+        Requires the `session_id` that was returned when the run was created.
+      operationId: get_team_run
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Team Id
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Run Id
+        - name: session_id
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Session ID for the run
+            title: Session Id
+          description: Session ID for the run
+      responses:
+        '200':
+          description: Run output retrieved successfully
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Team or run not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# List All Workflows
+
+> Retrieve a comprehensive list of all workflows configured in this OS instance.
+
+**Return Information:**
+- Workflow metadata (ID, name, description)
+- Input schema requirements
+- Step sequence and execution flow
+- Associated agents and teams
+
+
+
+## OpenAPI
+
+````yaml get /workflows
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /workflows:
+    get:
+      tags:
+        - Workflows
+      summary: List All Workflows
+      description: >-
+        Retrieve a comprehensive list of all workflows configured in this OS
+        instance.
+
+
+        **Return Information:**
+
+        - Workflow metadata (ID, name, description)
+
+        - Input schema requirements
+
+        - Step sequence and execution flow
+
+        - Associated agents and teams
+      operationId: get_workflows
+      responses:
+        '200':
+          description: List of workflows retrieved successfully
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/WorkflowSummaryResponse'
+                type: array
+                title: Response Get Workflows
+              example:
+                - id: content-creation-workflow
+                  name: Content Creation Workflow
+                  description: Automated content creation from blog posts to social media
+                  db_id: '123'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    WorkflowSummaryResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+          description: Unique identifier for the workflow
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the workflow
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the workflow
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+          description: Database identifier
+        is_component:
+          type: boolean
+          title: Is Component
+          description: Whether this workflow was created via Builder
+          default: false
+        current_version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Current Version
+          description: Current published version number
+        stage:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Stage
+          description: Stage of the loaded config (draft/published)
+      type: object
+      title: WorkflowSummaryResponse
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Workflow Details
+
+> Retrieve detailed configuration and step information for a specific workflow.
+
+
+
+## OpenAPI
+
+````yaml get /workflows/{workflow_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /workflows/{workflow_id}:
+    get:
+      tags:
+        - Workflows
+      summary: Get Workflow Details
+      description: >-
+        Retrieve detailed configuration and step information for a specific
+        workflow.
+      operationId: get_workflow
+      parameters:
+        - name: workflow_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Workflow Id
+      responses:
+        '200':
+          description: Workflow details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowResponse'
+              example:
+                id: content-creation-workflow
+                name: Content Creation Workflow
+                description: Automated content creation from blog posts to social media
+                db_id: '123'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Workflow not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    WorkflowResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+          description: Unique identifier for the workflow
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the workflow
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+          description: Database identifier
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the workflow
+        input_schema:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Schema
+          description: Input schema for the workflow
+        steps:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Steps
+          description: List of workflow steps
+        agent:
+          anyOf:
+            - $ref: '#/components/schemas/AgentResponse'
+            - type: 'null'
+          description: Agent configuration if used
+        team:
+          anyOf:
+            - $ref: '#/components/schemas/TeamResponse'
+            - type: 'null'
+          description: Team configuration if used
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        workflow_agent:
+          type: boolean
+          title: Workflow Agent
+          description: Whether this workflow uses a WorkflowAgent
+          default: false
+        is_component:
+          type: boolean
+          title: Is Component
+          description: Whether this workflow was created via Builder
+          default: false
+        current_version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Current Version
+          description: Current published version number
+        stage:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Stage
+          description: Stage of the loaded config (draft/published)
+      type: object
+      title: WorkflowResponse
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    AgentResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+        role:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Role
+        model:
+          anyOf:
+            - $ref: '#/components/schemas/ModelResponse'
+            - type: 'null'
+        tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Tools
+        sessions:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Sessions
+        knowledge:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Knowledge
+        memory:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Memory
+        reasoning:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Reasoning
+        default_tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Default Tools
+        system_message:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: System Message
+        extra_messages:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Extra Messages
+        response_settings:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Settings
+        introduction:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Introduction
+        streaming:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Streaming
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+        input_schema:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Schema
+        is_component:
+          type: boolean
+          title: Is Component
+          default: false
+        current_version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Current Version
+        stage:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Stage
+      type: object
+      title: AgentResponse
+    TeamResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+        role:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Role
+        mode:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Mode
+        model:
+          anyOf:
+            - $ref: '#/components/schemas/ModelResponse'
+            - type: 'null'
+        tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Tools
+        sessions:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Sessions
+        knowledge:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Knowledge
+        memory:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Memory
+        reasoning:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Reasoning
+        default_tools:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Default Tools
+        system_message:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: System Message
+        response_settings:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Settings
+        introduction:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Introduction
+        streaming:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Streaming
+        members:
+          anyOf:
+            - items:
+                anyOf:
+                  - $ref: '#/components/schemas/AgentResponse'
+                  - $ref: '#/components/schemas/TeamResponse'
+              type: array
+            - type: 'null'
+          title: Members
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+        input_schema:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Schema
+        is_component:
+          type: boolean
+          title: Is Component
+          default: false
+        current_version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Current Version
+        stage:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Stage
+      type: object
+      title: TeamResponse
+    ModelResponse:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the model
+        model:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model
+          description: Model identifier
+        provider:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Provider
+          description: Model provider name
+      type: object
+      title: ModelResponse
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Execute Workflow
+
+> Execute a workflow with the provided input data. Workflows can run in streaming or batch mode.
+
+**Execution Modes:**
+- **Streaming (`stream=true`)**: Real-time step-by-step execution updates via SSE
+- **Non-Streaming (`stream=false`)**: Complete workflow execution with final result
+
+**Workflow Execution Process:**
+1. Input validation against workflow schema
+2. Sequential or parallel step execution based on workflow design
+3. Data flow between steps with transformation
+4. Error handling and automatic retries where configured
+5. Final result compilation and response
+
+**Session Management:**
+Workflows support session continuity for stateful execution across multiple runs.
+
+
+
+## OpenAPI
+
+````yaml post /workflows/{workflow_id}/runs
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /workflows/{workflow_id}/runs:
+    post:
+      tags:
+        - Workflows
+      summary: Execute Workflow
+      description: >-
+        Execute a workflow with the provided input data. Workflows can run in
+        streaming or batch mode.
+
+
+        **Execution Modes:**
+
+        - **Streaming (`stream=true`)**: Real-time step-by-step execution
+        updates via SSE
+
+        - **Non-Streaming (`stream=false`)**: Complete workflow execution with
+        final result
+
+
+        **Workflow Execution Process:**
+
+        1. Input validation against workflow schema
+
+        2. Sequential or parallel step execution based on workflow design
+
+        3. Data flow between steps with transformation
+
+        4. Error handling and automatic retries where configured
+
+        5. Final result compilation and response
+
+
+        **Session Management:**
+
+        Workflows support session continuity for stateful execution across
+        multiple runs.
+      operationId: create_workflow_run
+      parameters:
+        - name: workflow_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Workflow Id
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_create_workflow_run'
+      responses:
+        '200':
+          description: Workflow executed successfully
+          content:
+            application/json:
+              schema: {}
+            text/event-stream:
+              example: |+
+                event: RunStarted
+                data: {"content": "Hello!", "run_id": "123..."}
+
+        '400':
+          description: Invalid input data or workflow configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Workflow not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Workflow execution error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    Body_create_workflow_run:
+      properties:
+        message:
+          type: string
+          title: Message
+        stream:
+          type: boolean
+          title: Stream
+          default: true
+        session_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Session Id
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+        version:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Version
+      type: object
+      required:
+        - message
+      title: Body_create_workflow_run
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Cancel Workflow Run
+
+> Cancel a currently executing workflow run, stopping all active steps and cleanup.
+**Note:** Complex workflows with multiple parallel steps may take time to fully cancel.
+
+
+
+## OpenAPI
+
+````yaml post /workflows/{workflow_id}/runs/{run_id}/cancel
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /workflows/{workflow_id}/runs/{run_id}/cancel:
+    post:
+      tags:
+        - Workflows
+      summary: Cancel Workflow Run
+      description: >-
+        Cancel a currently executing workflow run, stopping all active steps and
+        cleanup.
+
+        **Note:** Complex workflows with multiple parallel steps may take time
+        to fully cancel.
+      operationId: cancel_workflow_run
+      parameters:
+        - name: workflow_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Workflow Id
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Workflow or run not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to cancel workflow run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Workflow Run
+
+> Retrieve the status and output of a workflow run. Use this to poll for run completion.
+
+Requires the `session_id` that was returned when the run was created.
+
+
+
+## OpenAPI
+
+````yaml get /workflows/{workflow_id}/runs/{run_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /workflows/{workflow_id}/runs/{run_id}:
+    get:
+      tags:
+        - Workflows
+      summary: Get Workflow Run
+      description: >-
+        Retrieve the status and output of a workflow run. Use this to poll for
+        run completion.
+
+
+        Requires the `session_id` that was returned when the run was created.
+      operationId: get_workflow_run
+      parameters:
+        - name: workflow_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Workflow Id
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Run Id
+        - name: session_id
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Session ID for the run
+            title: Session Id
+          description: Session ID for the run
+      responses:
+        '200':
+          description: Run output retrieved successfully
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Workflow or run not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+Sessions
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# List Sessions
+
+> Retrieve paginated list of sessions with filtering and sorting options. Supports filtering by session type (agent, team, workflow), component, user, and name. Sessions represent conversation histories and execution contexts.
+
+
+
+## OpenAPI
+
+````yaml get /sessions
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /sessions:
+    get:
+      tags:
+        - Sessions
+      summary: List Sessions
+      description: >-
+        Retrieve paginated list of sessions with filtering and sorting options.
+        Supports filtering by session type (agent, team, workflow), component,
+        user, and name. Sessions represent conversation histories and execution
+        contexts.
+      operationId: get_sessions
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SessionType'
+            description: Type of sessions to retrieve (agent, team, or workflow)
+            default: agent
+          description: Type of sessions to retrieve (agent, team, or workflow)
+        - name: component_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Filter sessions by component ID (agent/team/workflow ID)
+            title: Component Id
+          description: Filter sessions by component ID (agent/team/workflow ID)
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Filter sessions by user ID
+            title: User Id
+          description: Filter sessions by user ID
+        - name: session_name
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Filter sessions by name (partial match)
+            title: Session Name
+          description: Filter sessions by name (partial match)
+        - name: limit
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 1
+              - type: 'null'
+            description: Number of sessions to return per page
+            default: 20
+            title: Limit
+          description: Number of sessions to return per page
+        - name: page
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 0
+              - type: 'null'
+            description: Page number for pagination
+            default: 1
+            title: Page
+          description: Page number for pagination
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Field to sort sessions by
+            default: created_at
+            title: Sort By
+          description: Field to sort sessions by
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - $ref: '#/components/schemas/SortOrder'
+              - type: 'null'
+            description: Sort order (asc or desc)
+            default: desc
+            title: Sort Order
+          description: Sort order (asc or desc)
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to query sessions from
+            title: Db Id
+          description: Database ID to query sessions from
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: The database table to use
+            title: Table
+          description: The database table to use
+      responses:
+        '200':
+          description: Sessions retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_SessionSchema_'
+              example:
+                session_example:
+                  summary: Example session response
+                  value:
+                    data:
+                      - session_id: 6f6cfbfd-9643-479a-ae47-b8f32eb4d710
+                        session_name: What tools do you have?
+                        session_state: {}
+                        created_at: '2025-09-05T16:02:09Z'
+                        updated_at: '2025-09-05T16:02:09Z'
+        '400':
+          description: Invalid session type or filter parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation error in query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    SessionType:
+      type: string
+      enum:
+        - agent
+        - team
+        - workflow
+      title: SessionType
+    SortOrder:
+      type: string
+      enum:
+        - asc
+        - desc
+      title: SortOrder
+    PaginatedResponse_SessionSchema_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SessionSchema'
+          type: array
+          title: Data
+          description: List of items for the current page
+        meta:
+          $ref: '#/components/schemas/PaginationInfo'
+          description: Pagination metadata
+      type: object
+      required:
+        - data
+        - meta
+      title: PaginatedResponse[SessionSchema]
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    SessionSchema:
+      properties:
+        session_id:
+          type: string
+          title: Session Id
+          description: Unique identifier for the session
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable name for the session
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current state data of the session
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when session was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when session was last updated
+      type: object
+      required:
+        - session_id
+        - session_name
+      title: SessionSchema
+    PaginationInfo:
+      properties:
+        page:
+          type: integer
+          minimum: 0
+          title: Page
+          description: Current page number (0-indexed)
+          default: 0
+        limit:
+          type: integer
+          minimum: 1
+          title: Limit
+          description: Number of items per page
+          default: 20
+        total_pages:
+          type: integer
+          minimum: 0
+          title: Total Pages
+          description: Total number of pages
+          default: 0
+        total_count:
+          type: integer
+          minimum: 0
+          title: Total Count
+          description: Total count of items
+          default: 0
+        search_time_ms:
+          type: number
+          minimum: 0
+          title: Search Time Ms
+          description: Search execution time in milliseconds
+          default: 0
+      type: object
+      title: PaginationInfo
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Create New Session
+
+> Create a new empty session with optional configuration. Useful for pre-creating sessions with specific session_state, metadata, or other properties before running any agent/team/workflow interactions. The session can later be used by providing its session_id in run requests.
+
+
+
+## OpenAPI
+
+````yaml post /sessions
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /sessions:
+    post:
+      tags:
+        - Sessions
+      summary: Create New Session
+      description: >-
+        Create a new empty session with optional configuration. Useful for
+        pre-creating sessions with specific session_state, metadata, or other
+        properties before running any agent/team/workflow interactions. The
+        session can later be used by providing its session_id in run requests.
+      operationId: create_session
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SessionType'
+            description: Type of session to create (agent, team, or workflow)
+            default: agent
+          description: Type of session to create (agent, team, or workflow)
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to create session in
+            title: Db Id
+          description: Database ID to create session in
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+              description: Session configuration data
+              default: {}
+      responses:
+        '201':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/AgentSessionDetailSchema'
+                  - $ref: '#/components/schemas/TeamSessionDetailSchema'
+                  - $ref: '#/components/schemas/WorkflowSessionDetailSchema'
+                title: Response Create Session
+              examples:
+                agent_session_example:
+                  summary: Example created agent session
+                  value:
+                    user_id: user-123
+                    agent_session_id: new-session-id
+                    session_id: new-session-id
+                    session_name: New Session
+                    session_state:
+                      key: value
+                    metadata:
+                      key: value
+                    agent_id: agent-1
+                    created_at: '2025-10-21T12:00:00Z'
+                    updated_at: '2025-10-21T12:00:00Z'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to create session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    SessionType:
+      type: string
+      enum:
+        - agent
+        - team
+        - workflow
+      title: SessionType
+    CreateSessionRequest:
+      properties:
+        session_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Session Id
+          description: Optional session ID (generated if not provided)
+        session_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Session Name
+          description: Name for the session
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Initial session state
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID if this is an agent session
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID if this is a team session
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID if this is a workflow session
+      type: object
+      title: CreateSessionRequest
+    AgentSessionDetailSchema:
+      properties:
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        agent_session_id:
+          type: string
+          title: Agent Session Id
+          description: Unique agent session identifier
+        session_id:
+          type: string
+          title: Session Id
+          description: Session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        session_summary:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Summary
+          description: Summary of session interactions
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current state of the session
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID used in this session
+        total_tokens:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Total Tokens
+          description: Total tokens used in this session
+        agent_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Agent Data
+          description: Agent-specific data
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Session metrics
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        chat_history:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Chat History
+          description: Complete chat history
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+      type: object
+      required:
+        - agent_session_id
+        - session_id
+        - session_name
+      title: AgentSessionDetailSchema
+    TeamSessionDetailSchema:
+      properties:
+        session_id:
+          type: string
+          title: Session Id
+          description: Unique session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID used in this session
+        session_summary:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Summary
+          description: Summary of team interactions
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current state of the session
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Session metrics
+        team_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Team Data
+          description: Team-specific data
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        chat_history:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Chat History
+          description: Complete chat history
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+        total_tokens:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Total Tokens
+          description: Total tokens used in this session
+      type: object
+      required:
+        - session_id
+        - session_name
+      title: TeamSessionDetailSchema
+    WorkflowSessionDetailSchema:
+      properties:
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID used in this session
+        workflow_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Name
+          description: Name of the workflow
+        session_id:
+          type: string
+          title: Session Id
+          description: Unique session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        session_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Data
+          description: Complete session data
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current workflow state
+        workflow_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Workflow Data
+          description: Workflow-specific data
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+      type: object
+      required:
+        - session_id
+        - session_name
+      title: WorkflowSessionDetailSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Delete Multiple Sessions
+
+> Delete multiple sessions by their IDs in a single operation. This action cannot be undone and will permanently remove all specified sessions and their runs.
+
+
+
+## OpenAPI
+
+````yaml delete /sessions
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /sessions:
+    delete:
+      tags:
+        - Sessions
+      summary: Delete Multiple Sessions
+      description: >-
+        Delete multiple sessions by their IDs in a single operation. This action
+        cannot be undone and will permanently remove all specified sessions and
+        their runs.
+      operationId: delete_sessions
+      parameters:
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to scope deletion to
+            title: User Id
+          description: User ID to scope deletion to
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for deletion
+            title: Db Id
+          description: Database ID to use for deletion
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for deletion
+            title: Table
+          description: Table to use for deletion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteSessionRequest'
+      responses:
+        '204':
+          description: Sessions deleted successfully
+        '400':
+          description: Invalid request - session IDs and types length mismatch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to delete sessions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    DeleteSessionRequest:
+      properties:
+        session_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Session Ids
+          description: List of session IDs to delete
+        session_types:
+          items:
+            $ref: '#/components/schemas/SessionType'
+          type: array
+          minItems: 1
+          title: Session Types
+          description: Types of sessions to delete
+      type: object
+      required:
+        - session_ids
+        - session_types
+      title: DeleteSessionRequest
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    SessionType:
+      type: string
+      enum:
+        - agent
+        - team
+        - workflow
+      title: SessionType
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Session by ID
+
+> Retrieve detailed information about a specific session including metadata, configuration, and run history. Response schema varies based on session type (agent, team, or workflow).
+
+
+
+## OpenAPI
+
+````yaml get /sessions/{session_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /sessions/{session_id}:
+    get:
+      tags:
+        - Sessions
+      summary: Get Session by ID
+      description: >-
+        Retrieve detailed information about a specific session including
+        metadata, configuration, and run history. Response schema varies based
+        on session type (agent, team, or workflow).
+      operationId: get_session_by_id
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Session ID to retrieve
+            title: Session Id
+          description: Session ID to retrieve
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SessionType'
+            description: Session type (agent, team, or workflow)
+            default: agent
+          description: Session type (agent, team, or workflow)
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to query session from
+            title: User Id
+          description: User ID to query session from
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to query session from
+            title: Db Id
+          description: Database ID to query session from
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to query session from
+            title: Table
+          description: Table to query session from
+      responses:
+        '200':
+          description: Session details retrieved successfully
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/AgentSessionDetailSchema'
+                  - $ref: '#/components/schemas/TeamSessionDetailSchema'
+                  - $ref: '#/components/schemas/WorkflowSessionDetailSchema'
+                title: Response Get Session By Id
+              examples:
+                agent_session_example:
+                  summary: Example agent session response
+                  value:
+                    user_id: '123'
+                    agent_session_id: 6f6cfbfd-9643-479a-ae47-b8f32eb4d710
+                    session_id: 6f6cfbfd-9643-479a-ae47-b8f32eb4d710
+                    session_name: What tools do you have?
+                    session_summary:
+                      summary: >-
+                        The user and assistant engaged in a conversation about
+                        the tools the agent has available.
+                      updated_at: '2025-09-05T18:02:12.269392'
+                    session_state: {}
+                    agent_id: basic-agent
+                    total_tokens: 160
+                    agent_data:
+                      name: Basic Agent
+                      agent_id: basic-agent
+                      model:
+                        provider: OpenAI
+                        name: OpenAIChat
+                        id: gpt-4o
+                    metrics:
+                      input_tokens: 134
+                      output_tokens: 26
+                      total_tokens: 160
+                      audio_input_tokens: 0
+                      audio_output_tokens: 0
+                      audio_total_tokens: 0
+                      cache_read_tokens: 0
+                      cache_write_tokens: 0
+                      reasoning_tokens: 0
+                    chat_history:
+                      - content: >-
+                          <additional_information>
+
+                          - Use markdown to format your answers.
+
+                          - The current time is 2025-09-05 18:02:09.171627.
+
+                          </additional_information>
+
+
+                          You have access to memories from previous interactions
+                          with the user that you can use:
+
+
+                          <memories_from_previous_interactions>
+
+                          - User really likes Digimon and Japan.
+
+                          - User really likes Japan.
+
+                          - User likes coffee.
+
+                          </memories_from_previous_interactions>
+
+
+                          Note: this information is from previous interactions
+                          and may be updated in this conversation. You should
+                          always prefer information from this conversation over
+                          the past memories.
+                        from_history: false
+                        stop_after_tool_call: false
+                        role: system
+                        created_at: 1757088129
+                      - content: What tools do you have?
+                        from_history: false
+                        stop_after_tool_call: false
+                        role: user
+                        created_at: 1757088129
+                      - content: >-
+                          I don't have access to external tools or the internet.
+                          However, I can assist you with a wide range of topics
+                          by providing information, answering questions, and
+                          offering suggestions based on the knowledge I've been
+                          trained on. If there's anything specific you need help
+                          with, feel free to ask!
+                        from_history: false
+                        stop_after_tool_call: false
+                        role: assistant
+                        metrics:
+                          input_tokens: 134
+                          output_tokens: 26
+                          total_tokens: 160
+                        created_at: 1757088129
+                    created_at: '2025-09-05T16:02:09Z'
+                    updated_at: '2025-09-05T16:02:09Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Invalid session type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    SessionType:
+      type: string
+      enum:
+        - agent
+        - team
+        - workflow
+      title: SessionType
+    AgentSessionDetailSchema:
+      properties:
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        agent_session_id:
+          type: string
+          title: Agent Session Id
+          description: Unique agent session identifier
+        session_id:
+          type: string
+          title: Session Id
+          description: Session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        session_summary:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Summary
+          description: Summary of session interactions
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current state of the session
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID used in this session
+        total_tokens:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Total Tokens
+          description: Total tokens used in this session
+        agent_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Agent Data
+          description: Agent-specific data
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Session metrics
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        chat_history:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Chat History
+          description: Complete chat history
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+      type: object
+      required:
+        - agent_session_id
+        - session_id
+        - session_name
+      title: AgentSessionDetailSchema
+    TeamSessionDetailSchema:
+      properties:
+        session_id:
+          type: string
+          title: Session Id
+          description: Unique session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID used in this session
+        session_summary:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Summary
+          description: Summary of team interactions
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current state of the session
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Session metrics
+        team_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Team Data
+          description: Team-specific data
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        chat_history:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Chat History
+          description: Complete chat history
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+        total_tokens:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Total Tokens
+          description: Total tokens used in this session
+      type: object
+      required:
+        - session_id
+        - session_name
+      title: TeamSessionDetailSchema
+    WorkflowSessionDetailSchema:
+      properties:
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID used in this session
+        workflow_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Name
+          description: Name of the workflow
+        session_id:
+          type: string
+          title: Session Id
+          description: Unique session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        session_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Data
+          description: Complete session data
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current workflow state
+        workflow_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Workflow Data
+          description: Workflow-specific data
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+      type: object
+      required:
+        - session_id
+        - session_name
+      title: WorkflowSessionDetailSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Delete Session
+
+> Permanently delete a specific session and all its associated runs. This action cannot be undone and will remove all conversation history.
+
+
+
+## OpenAPI
+
+````yaml delete /sessions/{session_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /sessions/{session_id}:
+    delete:
+      tags:
+        - Sessions
+      summary: Delete Session
+      description: >-
+        Permanently delete a specific session and all its associated runs. This
+        action cannot be undone and will remove all conversation history.
+      operationId: delete_session
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Session ID to delete
+            title: Session Id
+          description: Session ID to delete
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to scope deletion to
+            title: User Id
+          description: User ID to scope deletion to
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for deletion
+            title: Db Id
+          description: Database ID to use for deletion
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for deletion
+            title: Table
+          description: Table to use for deletion
+      responses:
+        '204':
+          description: Successful Response
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to delete session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Update Session
+
+> Update session properties such as session_name, session_state, metadata, or summary. Use this endpoint to modify the session name, update state, add metadata, or update the session summary.
+
+
+
+## OpenAPI
+
+````yaml patch /sessions/{session_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /sessions/{session_id}:
+    patch:
+      tags:
+        - Sessions
+      summary: Update Session
+      description: >-
+        Update session properties such as session_name, session_state, metadata,
+        or summary. Use this endpoint to modify the session name, update state,
+        add metadata, or update the session summary.
+      operationId: update_session
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Session ID to update
+            title: Session Id
+          description: Session ID to update
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SessionType'
+            description: Session type (agent, team, or workflow)
+            default: agent
+          description: Session type (agent, team, or workflow)
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID
+            title: User Id
+          description: User ID
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for update operation
+            title: Db Id
+          description: Database ID to use for update operation
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for update operation
+            title: Table
+          description: Table to use for update operation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSessionRequest'
+              description: Session update data
+      responses:
+        '200':
+          description: Session updated successfully
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/AgentSessionDetailSchema'
+                  - $ref: '#/components/schemas/TeamSessionDetailSchema'
+                  - $ref: '#/components/schemas/WorkflowSessionDetailSchema'
+                title: Response Update Session
+              examples:
+                update_summary:
+                  summary: Update session summary
+                  value:
+                    summary:
+                      summary: The user discussed project planning with the agent.
+                      updated_at: '2025-10-21T14:30:00Z'
+                update_metadata:
+                  summary: Update session metadata
+                  value:
+                    metadata:
+                      tags:
+                        - planning
+                        - project
+                      priority: high
+                update_session_name:
+                  summary: Update session name
+                  value:
+                    session_name: Updated Session Name
+                update_session_state:
+                  summary: Update session state
+                  value:
+                    session_state:
+                      step: completed
+                      context: Project planning finished
+                      progress: 100
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to update session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    SessionType:
+      type: string
+      enum:
+        - agent
+        - team
+        - workflow
+      title: SessionType
+    UpdateSessionRequest:
+      properties:
+        session_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Session Name
+          description: Updated session name
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Updated session state
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Updated metadata
+        summary:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Summary
+          description: Session summary
+      type: object
+      title: UpdateSessionRequest
+    AgentSessionDetailSchema:
+      properties:
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        agent_session_id:
+          type: string
+          title: Agent Session Id
+          description: Unique agent session identifier
+        session_id:
+          type: string
+          title: Session Id
+          description: Session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        session_summary:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Summary
+          description: Summary of session interactions
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current state of the session
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID used in this session
+        total_tokens:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Total Tokens
+          description: Total tokens used in this session
+        agent_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Agent Data
+          description: Agent-specific data
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Session metrics
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        chat_history:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Chat History
+          description: Complete chat history
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+      type: object
+      required:
+        - agent_session_id
+        - session_id
+        - session_name
+      title: AgentSessionDetailSchema
+    TeamSessionDetailSchema:
+      properties:
+        session_id:
+          type: string
+          title: Session Id
+          description: Unique session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID used in this session
+        session_summary:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Summary
+          description: Summary of team interactions
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current state of the session
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Session metrics
+        team_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Team Data
+          description: Team-specific data
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        chat_history:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Chat History
+          description: Complete chat history
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+        total_tokens:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Total Tokens
+          description: Total tokens used in this session
+      type: object
+      required:
+        - session_id
+        - session_name
+      title: TeamSessionDetailSchema
+    WorkflowSessionDetailSchema:
+      properties:
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID used in this session
+        workflow_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Name
+          description: Name of the workflow
+        session_id:
+          type: string
+          title: Session Id
+          description: Unique session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        session_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Data
+          description: Complete session data
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current workflow state
+        workflow_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Workflow Data
+          description: Workflow-specific data
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+      type: object
+      required:
+        - session_id
+        - session_name
+      title: WorkflowSessionDetailSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Session Runs
+
+> Retrieve all runs (executions) for a specific session with optional timestamp filtering. Runs represent individual interactions or executions within a session. Response schema varies based on session type.
+
+
+
+## OpenAPI
+
+````yaml get /sessions/{session_id}/runs
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /sessions/{session_id}/runs:
+    get:
+      tags:
+        - Sessions
+      summary: Get Session Runs
+      description: >-
+        Retrieve all runs (executions) for a specific session with optional
+        timestamp filtering. Runs represent individual interactions or
+        executions within a session. Response schema varies based on session
+        type.
+      operationId: get_session_runs
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Session ID to get runs from
+            title: Session Id
+          description: Session ID to get runs from
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SessionType'
+            description: Session type (agent, team, or workflow)
+            default: agent
+          description: Session type (agent, team, or workflow)
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to query runs from
+            title: User Id
+          description: User ID to query runs from
+        - name: created_after
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+              - type: 'null'
+            description: >-
+              Filter runs created after this Unix timestamp (epoch time in
+              seconds)
+            title: Created After
+          description: >-
+            Filter runs created after this Unix timestamp (epoch time in
+            seconds)
+        - name: created_before
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+              - type: 'null'
+            description: >-
+              Filter runs created before this Unix timestamp (epoch time in
+              seconds)
+            title: Created Before
+          description: >-
+            Filter runs created before this Unix timestamp (epoch time in
+            seconds)
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to query runs from
+            title: Db Id
+          description: Database ID to query runs from
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to query runs from
+            title: Table
+          description: Table to query runs from
+      responses:
+        '200':
+          description: Session runs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  anyOf:
+                    - $ref: '#/components/schemas/RunSchema'
+                    - $ref: '#/components/schemas/TeamRunSchema'
+                    - $ref: '#/components/schemas/WorkflowRunSchema'
+                title: Response Get Session Runs
+              examples:
+                completed_run:
+                  summary: Example completed run
+                  value:
+                    run_id: fcdf50f0-7c32-4593-b2ef-68a558774340
+                    parent_run_id: 80056af0-c7a5-4d69-b6a2-c3eba9f040e0
+                    agent_id: basic-agent
+                    user_id: ''
+                    run_input: Which tools do you have access to?
+                    content: >-
+                      I don't have access to external tools or the internet.
+                      However, I can assist you with a wide range of topics by
+                      providing information, answering questions, and offering
+                      suggestions based on the knowledge I've been trained on.
+                      If there's anything specific you need help with, feel free
+                      to ask!
+                    run_response_format: text
+                    reasoning_content: ''
+                    metrics:
+                      input_tokens: 82
+                      output_tokens: 56
+                      total_tokens: 138
+                      time_to_first_token: 0.047505500027909875
+                      duration: 4.840060166025069
+                    messages:
+                      - content: >-
+                          <additional_information>
+
+                          - Use markdown to format your answers.
+
+                          - The current time is 2025-09-08 17:52:10.101003.
+
+                          </additional_information>
+
+
+                          You have the capability to retain memories from
+                          previous interactions with the user, but have not had
+                          any interactions with the user yet.
+                        from_history: false
+                        stop_after_tool_call: false
+                        role: system
+                        created_at: 1757346730
+                      - content: Which tools do you have access to?
+                        from_history: false
+                        stop_after_tool_call: false
+                        role: user
+                        created_at: 1757346730
+                      - content: >-
+                          I don't have access to external tools or the internet.
+                          However, I can assist you with a wide range of topics
+                          by providing information, answering questions, and
+                          offering suggestions based on the knowledge I've been
+                          trained on. If there's anything specific you need help
+                          with, feel free to ask!
+                        from_history: false
+                        stop_after_tool_call: false
+                        role: assistant
+                        metrics:
+                          input_tokens: 82
+                          output_tokens: 56
+                          total_tokens: 138
+                        created_at: 1757346730
+                    events:
+                      - created_at: 1757346730
+                        event: RunStarted
+                        agent_id: basic-agent
+                        agent_name: Basic Agent
+                        run_id: fcdf50f0-7c32-4593-b2ef-68a558774340
+                        session_id: 80056af0-c7a5-4d69-b6a2-c3eba9f040e0
+                        model: gpt-4o
+                        model_provider: OpenAI
+                      - created_at: 1757346733
+                        event: MemoryUpdateStarted
+                        agent_id: basic-agent
+                        agent_name: Basic Agent
+                        run_id: fcdf50f0-7c32-4593-b2ef-68a558774340
+                        session_id: 80056af0-c7a5-4d69-b6a2-c3eba9f040e0
+                      - created_at: 1757346734
+                        event: MemoryUpdateCompleted
+                        agent_id: basic-agent
+                        agent_name: Basic Agent
+                        run_id: fcdf50f0-7c32-4593-b2ef-68a558774340
+                        session_id: 80056af0-c7a5-4d69-b6a2-c3eba9f040e0
+                      - created_at: 1757346734
+                        event: RunCompleted
+                        agent_id: basic-agent
+                        agent_name: Basic Agent
+                        run_id: fcdf50f0-7c32-4593-b2ef-68a558774340
+                        session_id: 80056af0-c7a5-4d69-b6a2-c3eba9f040e0
+                        content: >-
+                          I don't have access to external tools or the internet.
+                          However, I can assist you with a wide range of topics
+                          by providing information, answering questions, and
+                          offering suggestions based on the knowledge I've been
+                          trained on. If there's anything specific you need help
+                          with, feel free to ask!
+                        content_type: str
+                        metrics:
+                          input_tokens: 82
+                          output_tokens: 56
+                          total_tokens: 138
+                          time_to_first_token: 0.047505500027909875
+                          duration: 4.840060166025069
+                    created_at: '2025-09-08T15:52:10Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Session not found or has no runs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Invalid session type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    SessionType:
+      type: string
+      enum:
+        - agent
+        - team
+        - workflow
+      title: SessionType
+    RunSchema:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+          description: Unique identifier for the run
+        parent_run_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Parent Run Id
+          description: Parent run ID if this is a nested run
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID that executed this run
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the run
+        status:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status
+          description: Run status (PENDING, RUNNING, COMPLETED, ERROR, etc.)
+        run_input:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Run Input
+          description: Input provided to the run
+        content:
+          anyOf:
+            - type: string
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Content
+          description: Output content from the run
+        run_response_format:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Run Response Format
+          description: Format of the response (text/json)
+        reasoning_content:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Reasoning Content
+          description: Reasoning content if reasoning was enabled
+        reasoning_steps:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Steps
+          description: List of reasoning steps
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Performance and usage metrics
+        messages:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Messages
+          description: Message history for the run
+        tools:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Tools
+          description: Tools used in the run
+        events:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Events
+          description: Events generated during the run
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Run creation timestamp
+        references:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: References
+          description: References cited in the run
+        citations:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Citations
+          description: Citations from the model (e.g., from Gemini grounding/search)
+        reasoning_messages:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Messages
+          description: Reasoning process messages
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Session state at the end of the run
+        images:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Images
+          description: Images included in the run
+        videos:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Videos
+          description: Videos included in the run
+        audio:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Audio
+          description: Audio files included in the run
+        files:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Files
+          description: Files included in the run
+        response_audio:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Audio
+          description: Audio response if generated
+        input_media:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Media
+          description: Input media attachments
+      type: object
+      required:
+        - run_id
+      title: RunSchema
+    TeamRunSchema:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+          description: Unique identifier for the team run
+        parent_run_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Parent Run Id
+          description: Parent run ID if this is a nested run
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID that executed this run
+        status:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status
+          description: Run status (PENDING, RUNNING, COMPLETED, ERROR, etc.)
+        content:
+          anyOf:
+            - type: string
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Content
+          description: Output content from the team run
+        reasoning_content:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Reasoning Content
+          description: Reasoning content if reasoning was enabled
+        reasoning_steps:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Steps
+          description: List of reasoning steps
+        run_input:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Run Input
+          description: Input provided to the run
+        run_response_format:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Run Response Format
+          description: Format of the response (text/json)
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Performance and usage metrics
+        tools:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Tools
+          description: Tools used in the run
+        messages:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Messages
+          description: Message history for the run
+        events:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Events
+          description: Events generated during the run
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Run creation timestamp
+        references:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: References
+          description: References cited in the run
+        citations:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Citations
+          description: Citations from the model (e.g., from Gemini grounding/search)
+        reasoning_messages:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Messages
+          description: Reasoning process messages
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Session state at the end of the run
+        input_media:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Media
+          description: Input media attachments
+        images:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Images
+          description: Images included in the run
+        videos:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Videos
+          description: Videos included in the run
+        audio:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Audio
+          description: Audio files included in the run
+        files:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Files
+          description: Files included in the run
+        response_audio:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Audio
+          description: Audio response if generated
+      type: object
+      required:
+        - run_id
+      title: TeamRunSchema
+    WorkflowRunSchema:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+          description: Unique identifier for the workflow run
+        run_input:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Run Input
+          description: Input provided to the workflow
+        events:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Events
+          description: Events generated during the workflow
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID that was executed
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the run
+        content:
+          anyOf:
+            - type: string
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Content
+          description: Output content from the workflow
+        content_type:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Content Type
+          description: Type of content returned
+        status:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status
+          description: Status of the workflow run
+        step_results:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Step Results
+          description: Results from each workflow step
+        step_executor_runs:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Step Executor Runs
+          description: Executor runs for each step
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Performance and usage metrics
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Run creation timestamp
+        reasoning_content:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Reasoning Content
+          description: Reasoning content if reasoning was enabled
+        reasoning_steps:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Steps
+          description: List of reasoning steps
+        references:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: References
+          description: References cited in the workflow
+        citations:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Citations
+          description: Citations from the model (e.g., from Gemini grounding/search)
+        reasoning_messages:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Messages
+          description: Reasoning process messages
+        images:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Images
+          description: Images included in the workflow
+        videos:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Videos
+          description: Videos included in the workflow
+        audio:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Audio
+          description: Audio files included in the workflow
+        files:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Files
+          description: Files included in the workflow
+        response_audio:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Audio
+          description: Audio response if generated
+      type: object
+      required:
+        - run_id
+      title: WorkflowRunSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Run by ID
+
+> Retrieve a specific run by its ID from a session. Response schema varies based on the run type (agent run, team run, or workflow run).
+
+
+
+## OpenAPI
+
+````yaml get /sessions/{session_id}/runs/{run_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /sessions/{session_id}/runs/{run_id}:
+    get:
+      tags:
+        - Sessions
+      summary: Get Run by ID
+      description: >-
+        Retrieve a specific run by its ID from a session. Response schema varies
+        based on the run type (agent run, team run, or workflow run).
+      operationId: get_session_run
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Session ID to get run from
+            title: Session Id
+          description: Session ID to get run from
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Run ID to retrieve
+            title: Run Id
+          description: Run ID to retrieve
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SessionType'
+            description: Session type (agent, team, or workflow)
+            default: agent
+          description: Session type (agent, team, or workflow)
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to query run from
+            title: User Id
+          description: User ID to query run from
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to query run from
+            title: Db Id
+          description: Database ID to query run from
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to query run from
+            title: Table
+          description: Table to query run from
+      responses:
+        '200':
+          description: Run retrieved successfully
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/RunSchema'
+                  - $ref: '#/components/schemas/TeamRunSchema'
+                  - $ref: '#/components/schemas/WorkflowRunSchema'
+                title: Response Get Session Run
+              examples:
+                agent_run:
+                  summary: Example agent run
+                  value:
+                    run_id: fcdf50f0-7c32-4593-b2ef-68a558774340
+                    parent_run_id: 80056af0-c7a5-4d69-b6a2-c3eba9f040e0
+                    agent_id: basic-agent
+                    user_id: user_123
+                    run_input: Which tools do you have access to?
+                    content: I don't have access to external tools.
+                    created_at: 1728499200
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Session or run not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Invalid session type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    SessionType:
+      type: string
+      enum:
+        - agent
+        - team
+        - workflow
+      title: SessionType
+    RunSchema:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+          description: Unique identifier for the run
+        parent_run_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Parent Run Id
+          description: Parent run ID if this is a nested run
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID that executed this run
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the run
+        status:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status
+          description: Run status (PENDING, RUNNING, COMPLETED, ERROR, etc.)
+        run_input:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Run Input
+          description: Input provided to the run
+        content:
+          anyOf:
+            - type: string
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Content
+          description: Output content from the run
+        run_response_format:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Run Response Format
+          description: Format of the response (text/json)
+        reasoning_content:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Reasoning Content
+          description: Reasoning content if reasoning was enabled
+        reasoning_steps:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Steps
+          description: List of reasoning steps
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Performance and usage metrics
+        messages:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Messages
+          description: Message history for the run
+        tools:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Tools
+          description: Tools used in the run
+        events:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Events
+          description: Events generated during the run
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Run creation timestamp
+        references:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: References
+          description: References cited in the run
+        citations:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Citations
+          description: Citations from the model (e.g., from Gemini grounding/search)
+        reasoning_messages:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Messages
+          description: Reasoning process messages
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Session state at the end of the run
+        images:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Images
+          description: Images included in the run
+        videos:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Videos
+          description: Videos included in the run
+        audio:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Audio
+          description: Audio files included in the run
+        files:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Files
+          description: Files included in the run
+        response_audio:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Audio
+          description: Audio response if generated
+        input_media:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Media
+          description: Input media attachments
+      type: object
+      required:
+        - run_id
+      title: RunSchema
+    TeamRunSchema:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+          description: Unique identifier for the team run
+        parent_run_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Parent Run Id
+          description: Parent run ID if this is a nested run
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID that executed this run
+        status:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status
+          description: Run status (PENDING, RUNNING, COMPLETED, ERROR, etc.)
+        content:
+          anyOf:
+            - type: string
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Content
+          description: Output content from the team run
+        reasoning_content:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Reasoning Content
+          description: Reasoning content if reasoning was enabled
+        reasoning_steps:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Steps
+          description: List of reasoning steps
+        run_input:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Run Input
+          description: Input provided to the run
+        run_response_format:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Run Response Format
+          description: Format of the response (text/json)
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Performance and usage metrics
+        tools:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Tools
+          description: Tools used in the run
+        messages:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Messages
+          description: Message history for the run
+        events:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Events
+          description: Events generated during the run
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Run creation timestamp
+        references:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: References
+          description: References cited in the run
+        citations:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Citations
+          description: Citations from the model (e.g., from Gemini grounding/search)
+        reasoning_messages:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Messages
+          description: Reasoning process messages
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Session state at the end of the run
+        input_media:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Input Media
+          description: Input media attachments
+        images:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Images
+          description: Images included in the run
+        videos:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Videos
+          description: Videos included in the run
+        audio:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Audio
+          description: Audio files included in the run
+        files:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Files
+          description: Files included in the run
+        response_audio:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Audio
+          description: Audio response if generated
+      type: object
+      required:
+        - run_id
+      title: TeamRunSchema
+    WorkflowRunSchema:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+          description: Unique identifier for the workflow run
+        run_input:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Run Input
+          description: Input provided to the workflow
+        events:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Events
+          description: Events generated during the workflow
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID that was executed
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the run
+        content:
+          anyOf:
+            - type: string
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Content
+          description: Output content from the workflow
+        content_type:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Content Type
+          description: Type of content returned
+        status:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status
+          description: Status of the workflow run
+        step_results:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Step Results
+          description: Results from each workflow step
+        step_executor_runs:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Step Executor Runs
+          description: Executor runs for each step
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Performance and usage metrics
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Run creation timestamp
+        reasoning_content:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Reasoning Content
+          description: Reasoning content if reasoning was enabled
+        reasoning_steps:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Steps
+          description: List of reasoning steps
+        references:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: References
+          description: References cited in the workflow
+        citations:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Citations
+          description: Citations from the model (e.g., from Gemini grounding/search)
+        reasoning_messages:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Reasoning Messages
+          description: Reasoning process messages
+        images:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Images
+          description: Images included in the workflow
+        videos:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Videos
+          description: Videos included in the workflow
+        audio:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Audio
+          description: Audio files included in the workflow
+        files:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Files
+          description: Files included in the workflow
+        response_audio:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Response Audio
+          description: Audio response if generated
+      type: object
+      required:
+        - run_id
+      title: WorkflowRunSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Rename Session
+
+> Update the name of an existing session. Useful for organizing and categorizing sessions with meaningful names for better identification and management.
+
+
+
+## OpenAPI
+
+````yaml post /sessions/{session_id}/rename
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /sessions/{session_id}/rename:
+    post:
+      tags:
+        - Sessions
+      summary: Rename Session
+      description: >-
+        Update the name of an existing session. Useful for organizing and
+        categorizing sessions with meaningful names for better identification
+        and management.
+      operationId: rename_session
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Session ID to rename
+            title: Session Id
+          description: Session ID to rename
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SessionType'
+            description: Session type (agent, team, or workflow)
+            default: agent
+          description: Session type (agent, team, or workflow)
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to scope rename to
+            title: User Id
+          description: User ID to scope rename to
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for rename operation
+            title: Db Id
+          description: Database ID to use for rename operation
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for rename operation
+            title: Table
+          description: Table to use for rename operation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_rename_session'
+      responses:
+        '200':
+          description: Session renamed successfully
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/AgentSessionDetailSchema'
+                  - $ref: '#/components/schemas/TeamSessionDetailSchema'
+                  - $ref: '#/components/schemas/WorkflowSessionDetailSchema'
+                title: Response Rename Session
+              examples:
+                agent_session_example:
+                  summary: Example agent session response
+                  value:
+                    user_id: '123'
+                    agent_session_id: 6f6cfbfd-9643-479a-ae47-b8f32eb4d710
+                    session_id: 6f6cfbfd-9643-479a-ae47-b8f32eb4d710
+                    session_name: What tools do you have?
+                    session_summary:
+                      summary: >-
+                        The user and assistant engaged in a conversation about
+                        the tools the agent has available.
+                      updated_at: '2025-09-05T18:02:12.269392'
+                    session_state: {}
+                    agent_id: basic-agent
+                    total_tokens: 160
+                    agent_data:
+                      name: Basic Agent
+                      agent_id: basic-agent
+                      model:
+                        provider: OpenAI
+                        name: OpenAIChat
+                        id: gpt-4o
+                    metrics:
+                      input_tokens: 134
+                      output_tokens: 26
+                      total_tokens: 160
+                      audio_input_tokens: 0
+                      audio_output_tokens: 0
+                      audio_total_tokens: 0
+                      cache_read_tokens: 0
+                      cache_write_tokens: 0
+                      reasoning_tokens: 0
+                    chat_history:
+                      - content: >-
+                          <additional_information>
+
+                          - Use markdown to format your answers.
+
+                          - The current time is 2025-09-05 18:02:09.171627.
+
+                          </additional_information>
+
+
+                          You have access to memories from previous interactions
+                          with the user that you can use:
+
+
+                          <memories_from_previous_interactions>
+
+                          - User really likes Digimon and Japan.
+
+                          - User really likes Japan.
+
+                          - User likes coffee.
+
+                          </memories_from_previous_interactions>
+
+
+                          Note: this information is from previous interactions
+                          and may be updated in this conversation. You should
+                          always prefer information from this conversation over
+                          the past memories.
+                        from_history: false
+                        stop_after_tool_call: false
+                        role: system
+                        created_at: 1757088129
+                      - content: What tools do you have?
+                        from_history: false
+                        stop_after_tool_call: false
+                        role: user
+                        created_at: 1757088129
+                      - content: >-
+                          I don't have access to external tools or the internet.
+                          However, I can assist you with a wide range of topics
+                          by providing information, answering questions, and
+                          offering suggestions based on the knowledge I've been
+                          trained on. If there's anything specific you need help
+                          with, feel free to ask!
+                        from_history: false
+                        stop_after_tool_call: false
+                        role: assistant
+                        metrics:
+                          input_tokens: 134
+                          output_tokens: 26
+                          total_tokens: 160
+                        created_at: 1757088129
+                    created_at: '2025-09-05T16:02:09Z'
+                    updated_at: '2025-09-05T16:02:09Z'
+        '400':
+          description: Invalid session name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Invalid session type or validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    SessionType:
+      type: string
+      enum:
+        - agent
+        - team
+        - workflow
+      title: SessionType
+    Body_rename_session:
+      properties:
+        session_name:
+          type: string
+          title: Session Name
+          description: New name for the session
+      type: object
+      required:
+        - session_name
+      title: Body_rename_session
+    AgentSessionDetailSchema:
+      properties:
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        agent_session_id:
+          type: string
+          title: Agent Session Id
+          description: Unique agent session identifier
+        session_id:
+          type: string
+          title: Session Id
+          description: Session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        session_summary:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Summary
+          description: Summary of session interactions
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current state of the session
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID used in this session
+        total_tokens:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Total Tokens
+          description: Total tokens used in this session
+        agent_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Agent Data
+          description: Agent-specific data
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Session metrics
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        chat_history:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Chat History
+          description: Complete chat history
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+      type: object
+      required:
+        - agent_session_id
+        - session_id
+        - session_name
+      title: AgentSessionDetailSchema
+    TeamSessionDetailSchema:
+      properties:
+        session_id:
+          type: string
+          title: Session Id
+          description: Unique session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID used in this session
+        session_summary:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Summary
+          description: Summary of team interactions
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current state of the session
+        metrics:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metrics
+          description: Session metrics
+        team_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Team Data
+          description: Team-specific data
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        chat_history:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Chat History
+          description: Complete chat history
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+        total_tokens:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Total Tokens
+          description: Total tokens used in this session
+      type: object
+      required:
+        - session_id
+        - session_name
+      title: TeamSessionDetailSchema
+    WorkflowSessionDetailSchema:
+      properties:
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID associated with the session
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID used in this session
+        workflow_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Name
+          description: Name of the workflow
+        session_id:
+          type: string
+          title: Session Id
+          description: Unique session identifier
+        session_name:
+          type: string
+          title: Session Name
+          description: Human-readable session name
+        session_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session Data
+          description: Complete session data
+        session_state:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Session State
+          description: Current workflow state
+        workflow_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Workflow Data
+          description: Workflow-specific data
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Session creation timestamp
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Last update timestamp
+      type: object
+      required:
+        - session_id
+        - session_name
+      title: WorkflowSessionDetailSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# List Memories
+
+> Retrieve paginated list of user memories with filtering and search capabilities. Filter by user, agent, team, topics, or search within memory content.
+
+
+
+## OpenAPI
+
+````yaml get /memories
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /memories:
+    get:
+      tags:
+        - Memory
+      summary: List Memories
+      description: >-
+        Retrieve paginated list of user memories with filtering and search
+        capabilities. Filter by user, agent, team, topics, or search within
+        memory content.
+      operationId: get_memories
+      parameters:
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Filter memories by user ID
+            title: User Id
+          description: Filter memories by user ID
+        - name: agent_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Filter memories by agent ID
+            title: Agent Id
+          description: Filter memories by agent ID
+        - name: team_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Filter memories by team ID
+            title: Team Id
+          description: Filter memories by team ID
+        - name: search_content
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Fuzzy search within memory content
+            title: Search Content
+          description: Fuzzy search within memory content
+        - name: limit
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 1
+              - type: 'null'
+            description: Number of memories to return per page
+            default: 20
+            title: Limit
+          description: Number of memories to return per page
+        - name: page
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 0
+              - type: 'null'
+            description: Page number for pagination
+            default: 1
+            title: Page
+          description: Page number for pagination
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Field to sort memories by
+            default: updated_at
+            title: Sort By
+          description: Field to sort memories by
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - $ref: '#/components/schemas/SortOrder'
+              - type: 'null'
+            description: Sort order (asc or desc)
+            default: desc
+            title: Sort Order
+          description: Sort order (asc or desc)
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to query memories from
+            title: Db Id
+          description: Database ID to query memories from
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: The database table to use
+            title: Table
+          description: The database table to use
+        - name: topics
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - items:
+                  type: string
+                type: array
+              - type: 'null'
+            description: Comma-separated list of topics to filter by
+            examples:
+              - preferences,technical,communication_style
+            title: Topics
+          description: Comma-separated list of topics to filter by
+      responses:
+        '200':
+          description: Memories retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_UserMemorySchema_'
+              example:
+                data:
+                  - memory_id: f9361a69-2997-40c7-ae4e-a5861d434047
+                    memory: User likes coffee.
+                    topics:
+                      - preferences
+                    user_id: '123'
+                    updated_at: '2025-09-01T07:53:17Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    SortOrder:
+      type: string
+      enum:
+        - asc
+        - desc
+      title: SortOrder
+    PaginatedResponse_UserMemorySchema_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/UserMemorySchema'
+          type: array
+          title: Data
+          description: List of items for the current page
+        meta:
+          $ref: '#/components/schemas/PaginationInfo'
+          description: Pagination metadata
+      type: object
+      required:
+        - data
+        - meta
+      title: PaginatedResponse[UserMemorySchema]
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    UserMemorySchema:
+      properties:
+        memory_id:
+          type: string
+          title: Memory Id
+          description: Unique identifier for the memory
+        memory:
+          type: string
+          title: Memory
+          description: Memory content text
+        topics:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Topics
+          description: Topics or tags associated with the memory
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID associated with this memory
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID associated with this memory
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID who owns this memory
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when memory was last updated
+      type: object
+      required:
+        - memory_id
+        - memory
+      title: UserMemorySchema
+    PaginationInfo:
+      properties:
+        page:
+          type: integer
+          minimum: 0
+          title: Page
+          description: Current page number (0-indexed)
+          default: 0
+        limit:
+          type: integer
+          minimum: 1
+          title: Limit
+          description: Number of items per page
+          default: 20
+        total_pages:
+          type: integer
+          minimum: 0
+          title: Total Pages
+          description: Total number of pages
+          default: 0
+        total_count:
+          type: integer
+          minimum: 0
+          title: Total Count
+          description: Total count of items
+          default: 0
+        search_time_ms:
+          type: number
+          minimum: 0
+          title: Search Time Ms
+          description: Search execution time in milliseconds
+          default: 0
+      type: object
+      title: PaginationInfo
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Create Memory
+
+> Create a new user memory with content and associated topics. Memories are used to store contextual information for users across conversations.
+
+
+
+## OpenAPI
+
+````yaml post /memories
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /memories:
+    post:
+      tags:
+        - Memory
+      summary: Create Memory
+      description: >-
+        Create a new user memory with content and associated topics. Memories
+        are used to store contextual information for users across conversations.
+      operationId: create_memory
+      parameters:
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for memory storage
+            title: Db Id
+          description: Database ID to use for memory storage
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for memory storage
+            title: Table
+          description: Table to use for memory storage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserMemoryCreateSchema'
+      responses:
+        '200':
+          description: Memory created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMemorySchema'
+              example:
+                memory_id: mem-123
+                memory: User prefers technical explanations with code examples
+                topics:
+                  - preferences
+                  - communication_style
+                  - technical
+                user_id: user-456
+                created_at: '2024-01-15T10:30:00Z'
+                updated_at: '2024-01-15T10:30:00Z'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation error in payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to create memory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    UserMemoryCreateSchema:
+      properties:
+        memory:
+          type: string
+          maxLength: 5000
+          minLength: 1
+          title: Memory
+          description: Memory content text
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID who owns this memory
+        topics:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Topics
+          description: Topics or tags to categorize the memory
+      type: object
+      required:
+        - memory
+      title: UserMemoryCreateSchema
+      description: Define the payload expected for creating a new user memory
+    UserMemorySchema:
+      properties:
+        memory_id:
+          type: string
+          title: Memory Id
+          description: Unique identifier for the memory
+        memory:
+          type: string
+          title: Memory
+          description: Memory content text
+        topics:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Topics
+          description: Topics or tags associated with the memory
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID associated with this memory
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID associated with this memory
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID who owns this memory
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when memory was last updated
+      type: object
+      required:
+        - memory_id
+        - memory
+      title: UserMemorySchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Delete Multiple Memories
+
+> Delete multiple user memories by their IDs in a single operation. This action cannot be undone and all specified memories will be permanently removed.
+
+
+
+## OpenAPI
+
+````yaml delete /memories
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /memories:
+    delete:
+      tags:
+        - Memory
+      summary: Delete Multiple Memories
+      description: >-
+        Delete multiple user memories by their IDs in a single operation. This
+        action cannot be undone and all specified memories will be permanently
+        removed.
+      operationId: delete_memories
+      parameters:
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for deletion
+            title: Db Id
+          description: Database ID to use for deletion
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for deletion
+            title: Table
+          description: Table to use for deletion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteMemoriesRequest'
+      responses:
+        '204':
+          description: Memories deleted successfully
+        '400':
+          description: Invalid request - empty memory_ids list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to delete memories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    DeleteMemoriesRequest:
+      properties:
+        memory_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Memory Ids
+          description: List of memory IDs to delete
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID to filter memories for deletion
+      type: object
+      required:
+        - memory_ids
+      title: DeleteMemoriesRequest
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Memory by ID
+
+> Retrieve detailed information about a specific user memory by its ID.
+
+
+
+## OpenAPI
+
+````yaml get /memories/{memory_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /memories/{memory_id}:
+    get:
+      tags:
+        - Memory
+      summary: Get Memory by ID
+      description: Retrieve detailed information about a specific user memory by its ID.
+      operationId: get_memory
+      parameters:
+        - name: memory_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Memory ID to retrieve
+            title: Memory Id
+          description: Memory ID to retrieve
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to query memory for
+            title: User Id
+          description: User ID to query memory for
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to query memory from
+            title: Db Id
+          description: Database ID to query memory from
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to query memory from
+            title: Table
+          description: Table to query memory from
+      responses:
+        '200':
+          description: Memory retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMemorySchema'
+              example:
+                memory_id: f9361a69-2997-40c7-ae4e-a5861d434047
+                memory: User likes coffee.
+                topics:
+                  - preferences
+                user_id: '123'
+                updated_at: '2025-09-01T07:53:17Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Memory not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    UserMemorySchema:
+      properties:
+        memory_id:
+          type: string
+          title: Memory Id
+          description: Unique identifier for the memory
+        memory:
+          type: string
+          title: Memory
+          description: Memory content text
+        topics:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Topics
+          description: Topics or tags associated with the memory
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID associated with this memory
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID associated with this memory
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID who owns this memory
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when memory was last updated
+      type: object
+      required:
+        - memory_id
+        - memory
+      title: UserMemorySchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Delete Memory
+
+> Permanently delete a specific user memory. This action cannot be undone.
+
+
+
+## OpenAPI
+
+````yaml delete /memories/{memory_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /memories/{memory_id}:
+    delete:
+      tags:
+        - Memory
+      summary: Delete Memory
+      description: Permanently delete a specific user memory. This action cannot be undone.
+      operationId: delete_memory
+      parameters:
+        - name: memory_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Memory ID to delete
+            title: Memory Id
+          description: Memory ID to delete
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to delete memory for
+            title: User Id
+          description: User ID to delete memory for
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for deletion
+            title: Db Id
+          description: Database ID to use for deletion
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for deletion
+            title: Table
+          description: Table to use for deletion
+      responses:
+        '204':
+          description: Memory deleted successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Memory not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to delete memory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Update Memory
+
+> Update an existing user memory's content and topics. Replaces the entire memory content and topic list with the provided values.
+
+
+
+## OpenAPI
+
+````yaml patch /memories/{memory_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /memories/{memory_id}:
+    patch:
+      tags:
+        - Memory
+      summary: Update Memory
+      description: >-
+        Update an existing user memory's content and topics. Replaces the entire
+        memory content and topic list with the provided values.
+      operationId: update_memory
+      parameters:
+        - name: memory_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Memory ID to update
+            title: Memory Id
+          description: Memory ID to update
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for update
+            title: Db Id
+          description: Database ID to use for update
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for update
+            title: Table
+          description: Table to use for update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserMemoryCreateSchema'
+      responses:
+        '200':
+          description: Memory updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMemorySchema'
+              example:
+                memory_id: f9361a69-2997-40c7-ae4e-a5861d434047
+                memory: User likes coffee.
+                topics:
+                  - preferences
+                user_id: '123'
+                updated_at: '2025-09-01T07:53:17Z'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Memory not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation error in payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to update memory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    UserMemoryCreateSchema:
+      properties:
+        memory:
+          type: string
+          maxLength: 5000
+          minLength: 1
+          title: Memory
+          description: Memory content text
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID who owns this memory
+        topics:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Topics
+          description: Topics or tags to categorize the memory
+      type: object
+      required:
+        - memory
+      title: UserMemoryCreateSchema
+      description: Define the payload expected for creating a new user memory
+    UserMemorySchema:
+      properties:
+        memory_id:
+          type: string
+          title: Memory Id
+          description: Unique identifier for the memory
+        memory:
+          type: string
+          title: Memory
+          description: Memory content text
+        topics:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Topics
+          description: Topics or tags associated with the memory
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID associated with this memory
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID associated with this memory
+        user_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: User Id
+          description: User ID who owns this memory
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when memory was last updated
+      type: object
+      required:
+        - memory_id
+        - memory
+      title: UserMemorySchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Memory Topics
+
+> Retrieve all unique topics associated with memories in the system. Useful for filtering and categorizing memories by topic.
+
+
+
+## OpenAPI
+
+````yaml get /memory_topics
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /memory_topics:
+    get:
+      tags:
+        - Memory
+      summary: Get Memory Topics
+      description: >-
+        Retrieve all unique topics associated with memories in the system.
+        Useful for filtering and categorizing memories by topic.
+      operationId: get_memory_topics
+      parameters:
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to filter topics for
+            title: User Id
+          description: User ID to filter topics for
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to query topics from
+            title: Db Id
+          description: Database ID to query topics from
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to query topics from
+            title: Table
+          description: Table to query topics from
+      responses:
+        '200':
+          description: Memory topics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                title: Response Get Memory Topics
+              example:
+                - preferences
+                - communication_style
+                - technical
+                - industry
+                - compliance
+                - code_examples
+                - requirements
+                - healthcare
+                - finance
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get User Memory Statistics
+
+> Retrieve paginated statistics about memory usage by user. Provides insights into user engagement and memory distribution across users.
+
+
+
+## OpenAPI
+
+````yaml get /user_memory_stats
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /user_memory_stats:
+    get:
+      tags:
+        - Memory
+      summary: Get User Memory Statistics
+      description: >-
+        Retrieve paginated statistics about memory usage by user. Provides
+        insights into user engagement and memory distribution across users.
+      operationId: get_user_memory_stats
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 1
+              - type: 'null'
+            description: Number of user statistics to return per page
+            default: 20
+            title: Limit
+          description: Number of user statistics to return per page
+        - name: page
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 0
+              - type: 'null'
+            description: Page number for pagination
+            default: 1
+            title: Page
+          description: Page number for pagination
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to filter statistics for
+            title: User Id
+          description: User ID to filter statistics for
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to query statistics from
+            title: Db Id
+          description: Database ID to query statistics from
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to query statistics from
+            title: Table
+          description: Table to query statistics from
+      responses:
+        '200':
+          description: User memory statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_UserStatsSchema_'
+              example:
+                data:
+                  - user_id: '123'
+                    total_memories: 3
+                    last_memory_updated_at: '2025-09-01T07:53:17Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to retrieve user statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    PaginatedResponse_UserStatsSchema_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/UserStatsSchema'
+          type: array
+          title: Data
+          description: List of items for the current page
+        meta:
+          $ref: '#/components/schemas/PaginationInfo'
+          description: Pagination metadata
+      type: object
+      required:
+        - data
+        - meta
+      title: PaginatedResponse[UserStatsSchema]
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    UserStatsSchema:
+      properties:
+        user_id:
+          type: string
+          title: User Id
+          description: User ID
+        total_memories:
+          type: integer
+          minimum: 0
+          title: Total Memories
+          description: Total number of memories for this user
+        last_memory_updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Last Memory Updated At
+          description: Timestamp of the most recent memory update
+      type: object
+      required:
+        - user_id
+        - total_memories
+      title: UserStatsSchema
+      description: Schema for user memory statistics
+    PaginationInfo:
+      properties:
+        page:
+          type: integer
+          minimum: 0
+          title: Page
+          description: Current page number (0-indexed)
+          default: 0
+        limit:
+          type: integer
+          minimum: 1
+          title: Limit
+          description: Number of items per page
+          default: 20
+        total_pages:
+          type: integer
+          minimum: 0
+          title: Total Pages
+          description: Total number of pages
+          default: 0
+        total_count:
+          type: integer
+          minimum: 0
+          title: Total Count
+          description: Total count of items
+          default: 0
+        search_time_ms:
+          type: number
+          minimum: 0
+          title: Search Time Ms
+          description: Search execution time in milliseconds
+          default: 0
+      type: object
+      title: PaginationInfo
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get User Memory Statistics
+
+> Retrieve paginated statistics about memory usage by user. Provides insights into user engagement and memory distribution across users.
+
+
+
+## OpenAPI
+
+````yaml get /user_memory_stats
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /user_memory_stats:
+    get:
+      tags:
+        - Memory
+      summary: Get User Memory Statistics
+      description: >-
+        Retrieve paginated statistics about memory usage by user. Provides
+        insights into user engagement and memory distribution across users.
+      operationId: get_user_memory_stats
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 1
+              - type: 'null'
+            description: Number of user statistics to return per page
+            default: 20
+            title: Limit
+          description: Number of user statistics to return per page
+        - name: page
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 0
+              - type: 'null'
+            description: Page number for pagination
+            default: 1
+            title: Page
+          description: Page number for pagination
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: User ID to filter statistics for
+            title: User Id
+          description: User ID to filter statistics for
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to query statistics from
+            title: Db Id
+          description: Database ID to query statistics from
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to query statistics from
+            title: Table
+          description: Table to query statistics from
+      responses:
+        '200':
+          description: User memory statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_UserStatsSchema_'
+              example:
+                data:
+                  - user_id: '123'
+                    total_memories: 3
+                    last_memory_updated_at: '2025-09-01T07:53:17Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to retrieve user statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    PaginatedResponse_UserStatsSchema_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/UserStatsSchema'
+          type: array
+          title: Data
+          description: List of items for the current page
+        meta:
+          $ref: '#/components/schemas/PaginationInfo'
+          description: Pagination metadata
+      type: object
+      required:
+        - data
+        - meta
+      title: PaginatedResponse[UserStatsSchema]
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    UserStatsSchema:
+      properties:
+        user_id:
+          type: string
+          title: User Id
+          description: User ID
+        total_memories:
+          type: integer
+          minimum: 0
+          title: Total Memories
+          description: Total number of memories for this user
+        last_memory_updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Last Memory Updated At
+          description: Timestamp of the most recent memory update
+      type: object
+      required:
+        - user_id
+        - total_memories
+      title: UserStatsSchema
+      description: Schema for user memory statistics
+    PaginationInfo:
+      properties:
+        page:
+          type: integer
+          minimum: 0
+          title: Page
+          description: Current page number (0-indexed)
+          default: 0
+        limit:
+          type: integer
+          minimum: 1
+          title: Limit
+          description: Number of items per page
+          default: 20
+        total_pages:
+          type: integer
+          minimum: 0
+          title: Total Pages
+          description: Total number of pages
+          default: 0
+        total_count:
+          type: integer
+          minimum: 0
+          title: Total Count
+          description: Total count of items
+          default: 0
+        search_time_ms:
+          type: number
+          minimum: 0
+          title: Search Time Ms
+          description: Search execution time in milliseconds
+          default: 0
+      type: object
+      title: PaginationInfo
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# List Evaluation Runs
+
+> Retrieve paginated evaluation runs with filtering and sorting options. Filter by agent, team, workflow, model, or evaluation type.
+
+
+
+## OpenAPI
+
+````yaml get /eval-runs
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /eval-runs:
+    get:
+      tags:
+        - Evals
+      summary: List Evaluation Runs
+      description: >-
+        Retrieve paginated evaluation runs with filtering and sorting options.
+        Filter by agent, team, workflow, model, or evaluation type.
+      operationId: get_eval_runs
+      parameters:
+        - name: agent_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Agent ID
+            title: Agent Id
+          description: Agent ID
+        - name: team_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Team ID
+            title: Team Id
+          description: Team ID
+        - name: workflow_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Workflow ID
+            title: Workflow Id
+          description: Workflow ID
+        - name: model_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Model ID
+            title: Model Id
+          description: Model ID
+        - name: type
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - $ref: '#/components/schemas/EvalFilterType'
+              - type: 'null'
+            description: Filter type
+            title: Type
+          description: Filter type
+        - name: limit
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 1
+              - type: 'null'
+            description: Number of eval runs to return
+            default: 20
+            title: Limit
+          description: Number of eval runs to return
+        - name: page
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 0
+              - type: 'null'
+            description: Page number
+            default: 1
+            title: Page
+          description: Page number
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Field to sort by
+            default: created_at
+            title: Sort By
+          description: Field to sort by
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - $ref: '#/components/schemas/SortOrder'
+              - type: 'null'
+            description: Sort order (asc or desc)
+            default: desc
+            title: Sort Order
+          description: Sort order (asc or desc)
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: The ID of the database to use
+            title: Db Id
+          description: The ID of the database to use
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: The database table to use
+            title: Table
+          description: The database table to use
+        - name: eval_types
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: >-
+              Comma-separated eval types
+              (accuracy,agent_as_judge,performance,reliability)
+            examples:
+              - accuracy,agent_as_judge,performance,reliability
+            title: Eval Types
+          description: >-
+            Comma-separated eval types
+            (accuracy,agent_as_judge,performance,reliability)
+      responses:
+        '200':
+          description: Evaluation runs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_EvalSchema_'
+              example:
+                data:
+                  - id: a03fa2f4-900d-482d-afe0-470d4cd8d1f4
+                    agent_id: basic-agent
+                    model_id: gpt-4o
+                    model_provider: OpenAI
+                    name: 'Test '
+                    eval_type: reliability
+                    eval_data:
+                      eval_status: PASSED
+                      failed_tool_calls: []
+                      passed_tool_calls:
+                        - multiply
+                    eval_input:
+                      expected_tool_calls:
+                        - multiply
+                    created_at: '2025-08-27T15:41:59Z'
+                    updated_at: '2025-08-27T15:41:59Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    EvalFilterType:
+      type: string
+      enum:
+        - agent
+        - team
+        - workflow
+      title: EvalFilterType
+    SortOrder:
+      type: string
+      enum:
+        - asc
+        - desc
+      title: SortOrder
+    PaginatedResponse_EvalSchema_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/EvalSchema'
+          type: array
+          title: Data
+          description: List of items for the current page
+        meta:
+          $ref: '#/components/schemas/PaginationInfo'
+          description: Pagination metadata
+      type: object
+      required:
+        - data
+        - meta
+      title: PaginatedResponse[EvalSchema]
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    EvalSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the evaluation run
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID that was evaluated
+        model_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model Id
+          description: Model ID used in evaluation
+        model_provider:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model Provider
+          description: Model provider name
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID that was evaluated
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID that was evaluated
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the evaluation run
+        evaluated_component_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Evaluated Component Name
+          description: Name of the evaluated component
+        eval_type:
+          $ref: '#/components/schemas/EvalType'
+          description: Type of evaluation (accuracy, performance, or reliability)
+        eval_data:
+          additionalProperties: true
+          type: object
+          title: Eval Data
+          description: Evaluation results and metrics
+        eval_input:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Eval Input
+          description: Input parameters used for the evaluation
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when evaluation was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when evaluation was last updated
+      type: object
+      required:
+        - id
+        - eval_type
+        - eval_data
+      title: EvalSchema
+    PaginationInfo:
+      properties:
+        page:
+          type: integer
+          minimum: 0
+          title: Page
+          description: Current page number (0-indexed)
+          default: 0
+        limit:
+          type: integer
+          minimum: 1
+          title: Limit
+          description: Number of items per page
+          default: 20
+        total_pages:
+          type: integer
+          minimum: 0
+          title: Total Pages
+          description: Total number of pages
+          default: 0
+        total_count:
+          type: integer
+          minimum: 0
+          title: Total Count
+          description: Total count of items
+          default: 0
+        search_time_ms:
+          type: number
+          minimum: 0
+          title: Search Time Ms
+          description: Search execution time in milliseconds
+          default: 0
+      type: object
+      title: PaginationInfo
+    EvalType:
+      type: string
+      enum:
+        - accuracy
+        - agent_as_judge
+        - performance
+        - reliability
+      title: EvalType
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Execute Evaluation
+
+> Run evaluation tests on agents or teams. Supports accuracy, agent-as-judge, performance, and reliability evaluations. Requires either agent_id or team_id, but not both.
+
+
+
+## OpenAPI
+
+````yaml post /eval-runs
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /eval-runs:
+    post:
+      tags:
+        - Evals
+      summary: Execute Evaluation
+      description: >-
+        Run evaluation tests on agents or teams. Supports accuracy,
+        agent-as-judge, performance, and reliability evaluations. Requires
+        either agent_id or team_id, but not both.
+      operationId: run_eval
+      parameters:
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for evaluation
+            title: Db Id
+          description: Database ID to use for evaluation
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for evaluation
+            title: Table
+          description: Table to use for evaluation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvalRunInput'
+      responses:
+        '200':
+          description: Evaluation executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvalSchema'
+              example:
+                id: f2b2d72f-e9e2-4f0e-8810-0a7e1ff58614
+                agent_id: basic-agent
+                model_id: gpt-4o
+                model_provider: OpenAI
+                eval_type: reliability
+                eval_data:
+                  eval_status: PASSED
+                  failed_tool_calls: []
+                  passed_tool_calls:
+                    - multiply
+                created_at: '2025-08-27T15:41:59Z'
+                updated_at: '2025-08-27T15:41:59Z'
+        '400':
+          description: Invalid request - provide either agent_id or team_id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Agent or team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    EvalRunInput:
+      properties:
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID to evaluate
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID to evaluate
+        model_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model Id
+          description: Model ID to use for evaluation
+        model_provider:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model Provider
+          description: Model provider name
+        eval_type:
+          $ref: '#/components/schemas/EvalType'
+          description: Type of evaluation to run (accuracy, performance, or reliability)
+        input:
+          type: string
+          minLength: 1
+          title: Input
+          description: Input text/query for the evaluation
+        additional_guidelines:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Additional Guidelines
+          description: Additional guidelines for the evaluation
+        additional_context:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Additional Context
+          description: Additional context for the evaluation
+        num_iterations:
+          type: integer
+          maximum: 100
+          minimum: 1
+          title: Num Iterations
+          description: Number of times to run the evaluation
+          default: 1
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name for this evaluation run
+        expected_output:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Expected Output
+          description: Expected output for accuracy evaluation
+        criteria:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Criteria
+          description: Evaluation criteria for agent-as-judge evaluation
+        scoring_strategy:
+          anyOf:
+            - type: string
+              enum:
+                - numeric
+                - binary
+            - type: 'null'
+          title: Scoring Strategy
+          description: >-
+            Scoring strategy: 'numeric' (1-10 with threshold) or 'binary'
+            (PASS/FAIL)
+          default: binary
+        threshold:
+          anyOf:
+            - type: integer
+              maximum: 10
+              minimum: 1
+            - type: 'null'
+          title: Threshold
+          description: Score threshold for pass/fail (1-10), only used with numeric scoring
+          default: 7
+        warmup_runs:
+          type: integer
+          maximum: 10
+          minimum: 0
+          title: Warmup Runs
+          description: Number of warmup runs before measuring performance
+          default: 0
+        expected_tool_calls:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Expected Tool Calls
+          description: Expected tool calls for reliability evaluation
+      type: object
+      required:
+        - eval_type
+        - input
+      title: EvalRunInput
+    EvalSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the evaluation run
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID that was evaluated
+        model_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model Id
+          description: Model ID used in evaluation
+        model_provider:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model Provider
+          description: Model provider name
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID that was evaluated
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID that was evaluated
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the evaluation run
+        evaluated_component_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Evaluated Component Name
+          description: Name of the evaluated component
+        eval_type:
+          $ref: '#/components/schemas/EvalType'
+          description: Type of evaluation (accuracy, performance, or reliability)
+        eval_data:
+          additionalProperties: true
+          type: object
+          title: Eval Data
+          description: Evaluation results and metrics
+        eval_input:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Eval Input
+          description: Input parameters used for the evaluation
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when evaluation was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when evaluation was last updated
+      type: object
+      required:
+        - id
+        - eval_type
+        - eval_data
+      title: EvalSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    EvalType:
+      type: string
+      enum:
+        - accuracy
+        - agent_as_judge
+        - performance
+        - reliability
+      title: EvalType
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Delete Evaluation Runs
+
+> Delete multiple evaluation runs by their IDs. This action cannot be undone.
+
+
+
+## OpenAPI
+
+````yaml delete /eval-runs
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /eval-runs:
+    delete:
+      tags:
+        - Evals
+      summary: Delete Evaluation Runs
+      description: >-
+        Delete multiple evaluation runs by their IDs. This action cannot be
+        undone.
+      operationId: delete_eval_runs
+      parameters:
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for deletion
+            title: Db Id
+          description: Database ID to use for deletion
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for deletion
+            title: Table
+          description: Table to use for deletion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteEvalRunsRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to delete evaluation runs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    DeleteEvalRunsRequest:
+      properties:
+        eval_run_ids:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Eval Run Ids
+          description: List of evaluation run IDs to delete
+      type: object
+      required:
+        - eval_run_ids
+      title: DeleteEvalRunsRequest
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Evaluation Run
+
+> Retrieve detailed results and metrics for a specific evaluation run.
+
+
+
+## OpenAPI
+
+````yaml get /eval-runs/{eval_run_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /eval-runs/{eval_run_id}:
+    get:
+      tags:
+        - Evals
+      summary: Get Evaluation Run
+      description: Retrieve detailed results and metrics for a specific evaluation run.
+      operationId: get_eval_run
+      parameters:
+        - name: eval_run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Eval Run Id
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: The ID of the database to use
+            title: Db Id
+          description: The ID of the database to use
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to query eval run from
+            title: Table
+          description: Table to query eval run from
+      responses:
+        '200':
+          description: Evaluation run details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvalSchema'
+              example:
+                id: a03fa2f4-900d-482d-afe0-470d4cd8d1f4
+                agent_id: basic-agent
+                model_id: gpt-4o
+                model_provider: OpenAI
+                name: 'Test '
+                eval_type: reliability
+                eval_data:
+                  eval_status: PASSED
+                  failed_tool_calls: []
+                  passed_tool_calls:
+                    - multiply
+                eval_input:
+                  expected_tool_calls:
+                    - multiply
+                created_at: '2025-08-27T15:41:59Z'
+                updated_at: '2025-08-27T15:41:59Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Evaluation run not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    EvalSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the evaluation run
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID that was evaluated
+        model_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model Id
+          description: Model ID used in evaluation
+        model_provider:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model Provider
+          description: Model provider name
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID that was evaluated
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID that was evaluated
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the evaluation run
+        evaluated_component_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Evaluated Component Name
+          description: Name of the evaluated component
+        eval_type:
+          $ref: '#/components/schemas/EvalType'
+          description: Type of evaluation (accuracy, performance, or reliability)
+        eval_data:
+          additionalProperties: true
+          type: object
+          title: Eval Data
+          description: Evaluation results and metrics
+        eval_input:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Eval Input
+          description: Input parameters used for the evaluation
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when evaluation was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when evaluation was last updated
+      type: object
+      required:
+        - id
+        - eval_type
+        - eval_data
+      title: EvalSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    EvalType:
+      type: string
+      enum:
+        - accuracy
+        - agent_as_judge
+        - performance
+        - reliability
+      title: EvalType
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Update Evaluation Run
+
+> Update the name or other properties of an existing evaluation run.
+
+
+
+## OpenAPI
+
+````yaml patch /eval-runs/{eval_run_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /eval-runs/{eval_run_id}:
+    patch:
+      tags:
+        - Evals
+      summary: Update Evaluation Run
+      description: Update the name or other properties of an existing evaluation run.
+      operationId: update_eval_run
+      parameters:
+        - name: eval_run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Eval Run Id
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: The ID of the database to use
+            title: Db Id
+          description: The ID of the database to use
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for rename operation
+            title: Table
+          description: Table to use for rename operation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEvalRunRequest'
+      responses:
+        '200':
+          description: Evaluation run updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvalSchema'
+              example:
+                id: a03fa2f4-900d-482d-afe0-470d4cd8d1f4
+                agent_id: basic-agent
+                model_id: gpt-4o
+                model_provider: OpenAI
+                name: 'Test '
+                eval_type: reliability
+                eval_data:
+                  eval_status: PASSED
+                  failed_tool_calls: []
+                  passed_tool_calls:
+                    - multiply
+                eval_input:
+                  expected_tool_calls:
+                    - multiply
+                created_at: '2025-08-27T15:41:59Z'
+                updated_at: '2025-08-27T15:41:59Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Evaluation run not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to update evaluation run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    UpdateEvalRunRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Name
+          description: New name for the evaluation run
+      type: object
+      required:
+        - name
+      title: UpdateEvalRunRequest
+    EvalSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the evaluation run
+        agent_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Agent Id
+          description: Agent ID that was evaluated
+        model_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model Id
+          description: Model ID used in evaluation
+        model_provider:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Model Provider
+          description: Model provider name
+        team_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Team Id
+          description: Team ID that was evaluated
+        workflow_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workflow Id
+          description: Workflow ID that was evaluated
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the evaluation run
+        evaluated_component_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Evaluated Component Name
+          description: Name of the evaluated component
+        eval_type:
+          $ref: '#/components/schemas/EvalType'
+          description: Type of evaluation (accuracy, performance, or reliability)
+        eval_data:
+          additionalProperties: true
+          type: object
+          title: Eval Data
+          description: Evaluation results and metrics
+        eval_input:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Eval Input
+          description: Input parameters used for the evaluation
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when evaluation was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when evaluation was last updated
+      type: object
+      required:
+        - id
+        - eval_type
+        - eval_data
+      title: EvalSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    EvalType:
+      type: string
+      enum:
+        - accuracy
+        - agent_as_judge
+        - performance
+        - reliability
+      title: EvalType
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get AgentOS Metrics
+
+> Retrieve AgentOS metrics and analytics data for a specified date range. If no date range is specified, returns all available metrics.
+
+
+
+## OpenAPI
+
+````yaml get /metrics
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /metrics:
+    get:
+      tags:
+        - Metrics
+      summary: Get AgentOS Metrics
+      description: >-
+        Retrieve AgentOS metrics and analytics data for a specified date range.
+        If no date range is specified, returns all available metrics.
+      operationId: get_metrics
+      parameters:
+        - name: starting_date
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+                format: date
+              - type: 'null'
+            description: Starting date for metrics range (YYYY-MM-DD format)
+            title: Starting Date
+          description: Starting date for metrics range (YYYY-MM-DD format)
+        - name: ending_date
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+                format: date
+              - type: 'null'
+            description: Ending date for metrics range (YYYY-MM-DD format)
+            title: Ending Date
+          description: Ending date for metrics range (YYYY-MM-DD format)
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to query metrics from
+            title: Db Id
+          description: Database ID to query metrics from
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: The database table to use
+            title: Table
+          description: The database table to use
+      responses:
+        '200':
+          description: Metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+              example:
+                metrics:
+                  - id: 7bf39658-a00a-484c-8a28-67fd8a9ddb2a
+                    agent_runs_count: 5
+                    agent_sessions_count: 5
+                    team_runs_count: 0
+                    team_sessions_count: 0
+                    workflow_runs_count: 0
+                    workflow_sessions_count: 0
+                    users_count: 1
+                    token_metrics:
+                      input_tokens: 448
+                      output_tokens: 148
+                      total_tokens: 596
+                      audio_tokens: 0
+                      input_audio_tokens: 0
+                      output_audio_tokens: 0
+                      cached_tokens: 0
+                      cache_write_tokens: 0
+                      reasoning_tokens: 0
+                    model_metrics:
+                      - model_id: gpt-4o
+                        model_provider: OpenAI
+                        count: 5
+                    date: '2025-07-31T00:00:00Z'
+                    created_at: '2025-07-31T12:38:52Z'
+                    updated_at: '2025-07-31T12:49:01Z'
+        '400':
+          description: Invalid date range parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to retrieve metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    MetricsResponse:
+      properties:
+        metrics:
+          items:
+            $ref: '#/components/schemas/DayAggregatedMetrics'
+          type: array
+          title: Metrics
+          description: List of daily aggregated metrics
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp of the most recent metrics update
+      type: object
+      required:
+        - metrics
+      title: MetricsResponse
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    DayAggregatedMetrics:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the metrics record
+        agent_runs_count:
+          type: integer
+          minimum: 0
+          title: Agent Runs Count
+          description: Total number of agent runs
+        agent_sessions_count:
+          type: integer
+          minimum: 0
+          title: Agent Sessions Count
+          description: Total number of agent sessions
+        team_runs_count:
+          type: integer
+          minimum: 0
+          title: Team Runs Count
+          description: Total number of team runs
+        team_sessions_count:
+          type: integer
+          minimum: 0
+          title: Team Sessions Count
+          description: Total number of team sessions
+        workflow_runs_count:
+          type: integer
+          minimum: 0
+          title: Workflow Runs Count
+          description: Total number of workflow runs
+        workflow_sessions_count:
+          type: integer
+          minimum: 0
+          title: Workflow Sessions Count
+          description: Total number of workflow sessions
+        users_count:
+          type: integer
+          minimum: 0
+          title: Users Count
+          description: Total number of unique users
+        token_metrics:
+          additionalProperties: true
+          type: object
+          title: Token Metrics
+          description: Token usage metrics (input, output, cached, etc.)
+        model_metrics:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Model Metrics
+          description: Metrics grouped by model (model_id, provider, count)
+        date:
+          type: string
+          format: date-time
+          title: Date
+          description: Date for which these metrics are aggregated
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Timestamp when metrics were created
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+          description: Timestamp when metrics were last updated
+      type: object
+      required:
+        - id
+        - agent_runs_count
+        - agent_sessions_count
+        - team_runs_count
+        - team_sessions_count
+        - workflow_runs_count
+        - workflow_sessions_count
+        - users_count
+        - token_metrics
+        - model_metrics
+        - date
+        - created_at
+        - updated_at
+      title: DayAggregatedMetrics
+      description: Aggregated metrics for a given day
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Refresh Metrics
+
+> Manually trigger recalculation of system metrics from raw data. This operation analyzes system activity logs and regenerates aggregated metrics. Useful for ensuring metrics are up-to-date or after system maintenance.
+
+
+
+## OpenAPI
+
+````yaml post /metrics/refresh
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /metrics/refresh:
+    post:
+      tags:
+        - Metrics
+      summary: Refresh Metrics
+      description: >-
+        Manually trigger recalculation of system metrics from raw data. This
+        operation analyzes system activity logs and regenerates aggregated
+        metrics. Useful for ensuring metrics are up-to-date or after system
+        maintenance.
+      operationId: refresh_metrics
+      parameters:
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for metrics calculation
+            title: Db Id
+          description: Database ID to use for metrics calculation
+        - name: table
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Table to use for metrics calculation
+            title: Table
+          description: Table to use for metrics calculation
+      responses:
+        '200':
+          description: Metrics refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DayAggregatedMetrics'
+                title: Response Refresh Metrics
+              example:
+                - id: e77c9531-818b-47a5-99cd-59fed61e5403
+                  agent_runs_count: 2
+                  agent_sessions_count: 2
+                  team_runs_count: 0
+                  team_sessions_count: 0
+                  workflow_runs_count: 0
+                  workflow_sessions_count: 0
+                  users_count: 1
+                  token_metrics:
+                    input_tokens: 256
+                    output_tokens: 441
+                    total_tokens: 697
+                    audio_total_tokens: 0
+                    audio_input_tokens: 0
+                    audio_output_tokens: 0
+                    cache_read_tokens: 0
+                    cache_write_tokens: 0
+                    reasoning_tokens: 0
+                  model_metrics:
+                    - model_id: gpt-4o
+                      model_provider: OpenAI
+                      count: 2
+                  date: '2025-08-12T00:00:00Z'
+                  created_at: '2025-08-12T08:01:47Z'
+                  updated_at: '2025-08-12T08:01:47Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to refresh metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    DayAggregatedMetrics:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the metrics record
+        agent_runs_count:
+          type: integer
+          minimum: 0
+          title: Agent Runs Count
+          description: Total number of agent runs
+        agent_sessions_count:
+          type: integer
+          minimum: 0
+          title: Agent Sessions Count
+          description: Total number of agent sessions
+        team_runs_count:
+          type: integer
+          minimum: 0
+          title: Team Runs Count
+          description: Total number of team runs
+        team_sessions_count:
+          type: integer
+          minimum: 0
+          title: Team Sessions Count
+          description: Total number of team sessions
+        workflow_runs_count:
+          type: integer
+          minimum: 0
+          title: Workflow Runs Count
+          description: Total number of workflow runs
+        workflow_sessions_count:
+          type: integer
+          minimum: 0
+          title: Workflow Sessions Count
+          description: Total number of workflow sessions
+        users_count:
+          type: integer
+          minimum: 0
+          title: Users Count
+          description: Total number of unique users
+        token_metrics:
+          additionalProperties: true
+          type: object
+          title: Token Metrics
+          description: Token usage metrics (input, output, cached, etc.)
+        model_metrics:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Model Metrics
+          description: Metrics grouped by model (model_id, provider, count)
+        date:
+          type: string
+          format: date-time
+          title: Date
+          description: Date for which these metrics are aggregated
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Timestamp when metrics were created
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+          description: Timestamp when metrics were last updated
+      type: object
+      required:
+        - id
+        - agent_runs_count
+        - agent_sessions_count
+        - team_runs_count
+        - team_sessions_count
+        - workflow_runs_count
+        - workflow_sessions_count
+        - users_count
+        - token_metrics
+        - model_metrics
+        - date
+        - created_at
+        - updated_at
+      title: DayAggregatedMetrics
+      description: Aggregated metrics for a given day
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# List Content
+
+> Retrieve paginated list of all content in the knowledge base with filtering and sorting options. Filter by status, content type, or metadata properties.
+
+
+
+## OpenAPI
+
+````yaml get /knowledge/content
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /knowledge/content:
+    get:
+      tags:
+        - Knowledge
+      summary: List Content
+      description: >-
+        Retrieve paginated list of all content in the knowledge base with
+        filtering and sorting options. Filter by status, content type, or
+        metadata properties.
+      operationId: get_content
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 1
+              - type: 'null'
+            description: Number of content entries to return
+            default: 20
+            title: Limit
+          description: Number of content entries to return
+        - name: page
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+                minimum: 0
+              - type: 'null'
+            description: Page number
+            default: 1
+            title: Page
+          description: Page number
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Field to sort by
+            default: created_at
+            title: Sort By
+          description: Field to sort by
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - $ref: '#/components/schemas/SortOrder'
+              - type: 'null'
+            description: Sort order (asc or desc)
+            default: desc
+            title: Sort Order
+          description: Sort order (asc or desc)
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use
+            title: Db Id
+          description: Database ID to use
+        - name: knowledge_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Knowledge base ID to use
+            title: Knowledge Id
+          description: Knowledge base ID to use
+      responses:
+        '200':
+          description: Content list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_ContentResponseSchema_'
+              example:
+                data:
+                  - id: 3c2fc685-d451-4d47-b0c0-b9a544c672b7
+                    name: example.pdf
+                    description: ''
+                    type: application/pdf
+                    size: '251261'
+                    metadata: {}
+                    access_count: 1
+                    status: completed
+                    status_message: ''
+                    created_at: '2025-09-08T15:22:53Z'
+                    updated_at: '2025-09-08T15:22:54Z'
+                meta:
+                  page: 1
+                  limit: 20
+                  total_pages: 1
+                  total_count: 2
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    SortOrder:
+      type: string
+      enum:
+        - asc
+        - desc
+      title: SortOrder
+    PaginatedResponse_ContentResponseSchema_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ContentResponseSchema'
+          type: array
+          title: Data
+          description: List of items for the current page
+        meta:
+          $ref: '#/components/schemas/PaginationInfo'
+          description: Pagination metadata
+      type: object
+      required:
+        - data
+        - meta
+      title: PaginatedResponse[ContentResponseSchema]
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ContentResponseSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the content
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the content
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the content
+        type:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Type
+          description: MIME type of the content
+        size:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Size
+          description: Size of the content in bytes
+        linked_to:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Linked To
+          description: ID of related content if linked
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata as key-value pairs
+        access_count:
+          anyOf:
+            - type: integer
+              minimum: 0
+            - type: 'null'
+          title: Access Count
+          description: Number of times content has been accessed
+        status:
+          anyOf:
+            - $ref: '#/components/schemas/ContentStatus'
+            - type: 'null'
+          description: Processing status of the content
+        status_message:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status Message
+          description: Status message or error details
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when content was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when content was last updated
+      type: object
+      required:
+        - id
+      title: ContentResponseSchema
+    PaginationInfo:
+      properties:
+        page:
+          type: integer
+          minimum: 0
+          title: Page
+          description: Current page number (0-indexed)
+          default: 0
+        limit:
+          type: integer
+          minimum: 1
+          title: Limit
+          description: Number of items per page
+          default: 20
+        total_pages:
+          type: integer
+          minimum: 0
+          title: Total Pages
+          description: Total number of pages
+          default: 0
+        total_count:
+          type: integer
+          minimum: 0
+          title: Total Count
+          description: Total count of items
+          default: 0
+        search_time_ms:
+          type: number
+          minimum: 0
+          title: Search Time Ms
+          description: Search execution time in milliseconds
+          default: 0
+      type: object
+      title: PaginationInfo
+    ContentStatus:
+      type: string
+      enum:
+        - processing
+        - completed
+        - failed
+      title: ContentStatus
+      description: Enumeration of possible content processing statuses.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Upload Content
+
+> Upload content to the knowledge base. Supports file uploads, text content, or URLs. Content is processed asynchronously in the background. Supports custom readers and chunking strategies.
+
+
+
+## OpenAPI
+
+````yaml post /knowledge/content
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /knowledge/content:
+    post:
+      tags:
+        - Knowledge
+      summary: Upload Content
+      description: >-
+        Upload content to the knowledge base. Supports file uploads, text
+        content, or URLs. Content is processed asynchronously in the background.
+        Supports custom readers and chunking strategies.
+      operationId: upload_content
+      parameters:
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for content storage
+            title: Db Id
+          description: Database ID to use for content storage
+        - name: knowledge_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Knowledge base ID to upload to
+            title: Knowledge Id
+          description: Knowledge base ID to upload to
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_content'
+      responses:
+        '202':
+          description: Content upload accepted for processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponseSchema'
+              example:
+                id: content-123
+                name: example-document.pdf
+                description: Sample document for processing
+                metadata:
+                  category: documentation
+                  priority: high
+                status: processing
+        '400':
+          description: Invalid request - malformed metadata or missing content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation error in form data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    Body_upload_content:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Content name (auto-generated from file/URL if not provided)
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Content description for context
+        url:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Url
+          description: URL to fetch content from (JSON array or single URL string)
+        metadata:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Metadata
+          description: JSON metadata object for additional content properties
+        file:
+          anyOf:
+            - type: string
+              contentMediaType: application/octet-stream
+            - type: 'null'
+          title: File
+          description: File to upload for processing
+        text_content:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Text Content
+          description: Raw text content to process
+        reader_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Reader Id
+          description: ID of the reader to use for content processing
+        chunker:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Chunker
+          description: Chunking strategy to apply during processing
+        chunk_size:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Chunk Size
+          description: Chunk size to use for processing
+        chunk_overlap:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Chunk Overlap
+          description: Chunk overlap to use for processing
+      type: object
+      title: Body_upload_content
+    ContentResponseSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the content
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the content
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the content
+        type:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Type
+          description: MIME type of the content
+        size:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Size
+          description: Size of the content in bytes
+        linked_to:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Linked To
+          description: ID of related content if linked
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata as key-value pairs
+        access_count:
+          anyOf:
+            - type: integer
+              minimum: 0
+            - type: 'null'
+          title: Access Count
+          description: Number of times content has been accessed
+        status:
+          anyOf:
+            - $ref: '#/components/schemas/ContentStatus'
+            - type: 'null'
+          description: Processing status of the content
+        status_message:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status Message
+          description: Status message or error details
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when content was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when content was last updated
+      type: object
+      required:
+        - id
+      title: ContentResponseSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ContentStatus:
+      type: string
+      enum:
+        - processing
+        - completed
+        - failed
+      title: ContentStatus
+      description: Enumeration of possible content processing statuses.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Delete All Content
+
+> Permanently remove all content from the knowledge base. This is a destructive operation that cannot be undone. Use with extreme caution.
+
+
+
+## OpenAPI
+
+````yaml delete /knowledge/content
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /knowledge/content:
+    delete:
+      tags:
+        - Knowledge
+      summary: Delete All Content
+      description: >-
+        Permanently remove all content from the knowledge base. This is a
+        destructive operation that cannot be undone. Use with extreme caution.
+      operationId: delete_all_content
+      parameters:
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use
+            title: Db Id
+          description: Database ID to use
+        - name: knowledge_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Knowledge base ID to use
+            title: Knowledge Id
+          description: Knowledge base ID to use
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to delete all content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Upload Remote Content
+
+> Upload content from a remote source (S3, GCS, SharePoint, GitHub) to the knowledge base. Content is processed asynchronously in the background.
+
+
+
+## OpenAPI
+
+````yaml post /knowledge/remote-content
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /knowledge/remote-content:
+    post:
+      tags:
+        - Knowledge
+      summary: Upload Remote Content
+      description: >-
+        Upload content from a remote source (S3, GCS, SharePoint, GitHub) to the
+        knowledge base. Content is processed asynchronously in the background.
+      operationId: upload_remote_content
+      parameters:
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use for content storage
+            title: Db Id
+          description: Database ID to use for content storage
+        - name: knowledge_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Knowledge base ID to upload to
+            title: Knowledge Id
+          description: Knowledge base ID to upload to
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_upload_remote_content'
+      responses:
+        '202':
+          description: Remote content upload accepted for processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponseSchema'
+              example:
+                id: content-456
+                name: reports/q1-2024.pdf
+                description: Q1 Report from S3
+                metadata:
+                  source: s3-docs
+                status: processing
+        '400':
+          description: Invalid request - unknown config or missing path
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation error in request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    Body_upload_remote_content:
+      properties:
+        config_id:
+          type: string
+          title: Config Id
+          description: ID of the configured remote content source (from /knowledge/config)
+        path:
+          type: string
+          title: Path
+          description: Path to file or folder in the remote source
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Content name (auto-generated if not provided)
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Content description
+        metadata:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Metadata
+          description: JSON metadata object
+        reader_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Reader Id
+          description: ID of the reader to use for processing
+        chunker:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Chunker
+          description: Chunking strategy to apply
+        chunk_size:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Chunk Size
+          description: Chunk size for processing
+        chunk_overlap:
+          anyOf:
+            - type: integer
+            - type: 'null'
+          title: Chunk Overlap
+          description: Chunk overlap for processing
+      type: object
+      required:
+        - config_id
+        - path
+      title: Body_upload_remote_content
+    ContentResponseSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the content
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the content
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the content
+        type:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Type
+          description: MIME type of the content
+        size:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Size
+          description: Size of the content in bytes
+        linked_to:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Linked To
+          description: ID of related content if linked
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata as key-value pairs
+        access_count:
+          anyOf:
+            - type: integer
+              minimum: 0
+            - type: 'null'
+          title: Access Count
+          description: Number of times content has been accessed
+        status:
+          anyOf:
+            - $ref: '#/components/schemas/ContentStatus'
+            - type: 'null'
+          description: Processing status of the content
+        status_message:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status Message
+          description: Status message or error details
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when content was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when content was last updated
+      type: object
+      required:
+        - id
+      title: ContentResponseSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ContentStatus:
+      type: string
+      enum:
+        - processing
+        - completed
+        - failed
+      title: ContentStatus
+      description: Enumeration of possible content processing statuses.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Content by ID
+
+> Retrieve detailed information about a specific content item including processing status and metadata.
+
+
+
+## OpenAPI
+
+````yaml get /knowledge/content/{content_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /knowledge/content/{content_id}:
+    get:
+      tags:
+        - Knowledge
+      summary: Get Content by ID
+      description: >-
+        Retrieve detailed information about a specific content item including
+        processing status and metadata.
+      operationId: get_content_by_id
+      parameters:
+        - name: content_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Content Id
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use
+            title: Db Id
+          description: Database ID to use
+        - name: knowledge_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Knowledge base ID to use
+            title: Knowledge Id
+          description: Knowledge base ID to use
+      responses:
+        '200':
+          description: Content details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponseSchema'
+              example:
+                id: 3c2fc685-d451-4d47-b0c0-b9a544c672b7
+                name: example.pdf
+                description: ''
+                type: application/pdf
+                size: '251261'
+                metadata: {}
+                access_count: 1
+                status: completed
+                status_message: ''
+                created_at: '2025-09-08T15:22:53Z'
+                updated_at: '2025-09-08T15:22:54Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    ContentResponseSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the content
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the content
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the content
+        type:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Type
+          description: MIME type of the content
+        size:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Size
+          description: Size of the content in bytes
+        linked_to:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Linked To
+          description: ID of related content if linked
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata as key-value pairs
+        access_count:
+          anyOf:
+            - type: integer
+              minimum: 0
+            - type: 'null'
+          title: Access Count
+          description: Number of times content has been accessed
+        status:
+          anyOf:
+            - $ref: '#/components/schemas/ContentStatus'
+            - type: 'null'
+          description: Processing status of the content
+        status_message:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status Message
+          description: Status message or error details
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when content was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when content was last updated
+      type: object
+      required:
+        - id
+      title: ContentResponseSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ContentStatus:
+      type: string
+      enum:
+        - processing
+        - completed
+        - failed
+      title: ContentStatus
+      description: Enumeration of possible content processing statuses.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Delete Content by ID
+
+> Permanently remove a specific content item from the knowledge base. This action cannot be undone.
+
+
+
+## OpenAPI
+
+````yaml delete /knowledge/content/{content_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /knowledge/content/{content_id}:
+    delete:
+      tags:
+        - Knowledge
+      summary: Delete Content by ID
+      description: >-
+        Permanently remove a specific content item from the knowledge base. This
+        action cannot be undone.
+      operationId: delete_content_by_id
+      parameters:
+        - name: content_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Content Id
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use
+            title: Db Id
+          description: Database ID to use
+        - name: knowledge_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Knowledge base ID to use
+            title: Knowledge Id
+          description: Knowledge base ID to use
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponseSchema'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Failed to delete content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    ContentResponseSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the content
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the content
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the content
+        type:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Type
+          description: MIME type of the content
+        size:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Size
+          description: Size of the content in bytes
+        linked_to:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Linked To
+          description: ID of related content if linked
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata as key-value pairs
+        access_count:
+          anyOf:
+            - type: integer
+              minimum: 0
+            - type: 'null'
+          title: Access Count
+          description: Number of times content has been accessed
+        status:
+          anyOf:
+            - $ref: '#/components/schemas/ContentStatus'
+            - type: 'null'
+          description: Processing status of the content
+        status_message:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status Message
+          description: Status message or error details
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when content was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when content was last updated
+      type: object
+      required:
+        - id
+      title: ContentResponseSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ContentStatus:
+      type: string
+      enum:
+        - processing
+        - completed
+        - failed
+      title: ContentStatus
+      description: Enumeration of possible content processing statuses.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Update Content
+
+> Update content properties such as name, description, metadata, or processing configuration. Allows modification of existing content without re-uploading.
+
+
+
+## OpenAPI
+
+````yaml patch /knowledge/content/{content_id}
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /knowledge/content/{content_id}:
+    patch:
+      tags:
+        - Knowledge
+      summary: Update Content
+      description: >-
+        Update content properties such as name, description, metadata, or
+        processing configuration. Allows modification of existing content
+        without re-uploading.
+      operationId: update_content
+      parameters:
+        - name: content_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Content ID
+            title: Content Id
+          description: Content ID
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use
+            title: Db Id
+          description: Database ID to use
+        - name: knowledge_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Knowledge base ID to use
+            title: Knowledge Id
+          description: Knowledge base ID to use
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_update_content'
+      responses:
+        '200':
+          description: Content updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponseSchema'
+              example:
+                id: 3c2fc685-d451-4d47-b0c0-b9a544c672b7
+                name: example.pdf
+                description: ''
+                type: application/pdf
+                size: '251261'
+                metadata: {}
+                access_count: 1
+                status: completed
+                status_message: ''
+                created_at: '2025-09-08T15:22:53Z'
+                updated_at: '2025-09-08T15:22:54Z'
+        '400':
+          description: Invalid request - malformed metadata or invalid reader_id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    Body_update_content:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Content name
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Content description
+        metadata:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Metadata
+          description: Content metadata as JSON string
+        reader_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Reader Id
+          description: ID of the reader to use for processing
+      type: object
+      title: Body_update_content
+    ContentResponseSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the content
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the content
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the content
+        type:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Type
+          description: MIME type of the content
+        size:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Size
+          description: Size of the content in bytes
+        linked_to:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Linked To
+          description: ID of related content if linked
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Additional metadata as key-value pairs
+        access_count:
+          anyOf:
+            - type: integer
+              minimum: 0
+            - type: 'null'
+          title: Access Count
+          description: Number of times content has been accessed
+        status:
+          anyOf:
+            - $ref: '#/components/schemas/ContentStatus'
+            - type: 'null'
+          description: Processing status of the content
+        status_message:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Status Message
+          description: Status message or error details
+        created_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Created At
+          description: Timestamp when content was created
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Updated At
+          description: Timestamp when content was last updated
+      type: object
+      required:
+        - id
+      title: ContentResponseSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ContentStatus:
+      type: string
+      enum:
+        - processing
+        - completed
+        - failed
+      title: ContentStatus
+      description: Enumeration of possible content processing statuses.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Content Status
+
+> Retrieve the current processing status of a content item. Useful for monitoring asynchronous content processing progress and identifying any processing errors.
+
+
+
+## OpenAPI
+
+````yaml get /knowledge/content/{content_id}/status
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /knowledge/content/{content_id}/status:
+    get:
+      tags:
+        - Knowledge
+      summary: Get Content Status
+      description: >-
+        Retrieve the current processing status of a content item. Useful for
+        monitoring asynchronous content processing progress and identifying any
+        processing errors.
+      operationId: get_content_status
+      parameters:
+        - name: content_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Content Id
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use
+            title: Db Id
+          description: Database ID to use
+        - name: knowledge_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Knowledge base ID to use
+            title: Knowledge Id
+          description: Knowledge base ID to use
+      responses:
+        '200':
+          description: Content status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentStatusResponse'
+              examples:
+                completed:
+                  summary: Example completed content status
+                  value:
+                    status: completed
+                    status_message: ''
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    ContentStatusResponse:
+      properties:
+        id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Id
+          description: Content ID
+        status:
+          $ref: '#/components/schemas/ContentStatus'
+          description: Current processing status of the content
+        status_message:
+          type: string
+          title: Status Message
+          description: Status message or error details
+          default: ''
+      type: object
+      required:
+        - status
+      title: ContentStatusResponse
+      description: Response model for content status endpoint.
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ContentStatus:
+      type: string
+      enum:
+        - processing
+        - completed
+        - failed
+      title: ContentStatus
+      description: Enumeration of possible content processing statuses.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Search Knowledge
+
+> Search the knowledge base for relevant documents using query, filters and search type.
+
+
+
+## OpenAPI
+
+````yaml post /knowledge/search
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /knowledge/search:
+    post:
+      tags:
+        - Knowledge
+      summary: Search Knowledge
+      description: >-
+        Search the knowledge base for relevant documents using query, filters
+        and search type.
+      operationId: search_knowledge
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VectorSearchRequestSchema'
+        required: true
+      responses:
+        '200':
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_VectorSearchResult_'
+              example:
+                data:
+                  - id: doc_123
+                    content: >-
+                      Jordan Mitchell - Software Engineer with skills in
+                      JavaScript, React, Python
+                    name: cv_1
+                    meta_data:
+                      page: 1
+                      chunk: 1
+                    usage:
+                      total_tokens: 14
+                    reranking_score: 0.95
+                    content_id: content_456
+                meta:
+                  page: 1
+                  limit: 20
+                  total_pages: 2
+                  total_count: 35
+        '400':
+          description: Invalid search parameters
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: No documents found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    VectorSearchRequestSchema:
+      properties:
+        query:
+          type: string
+          title: Query
+          description: The search query text
+        db_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Db Id
+          description: Database ID to search in
+        knowledge_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Knowledge Id
+          description: Knowledge base ID to search in
+        vector_db_ids:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Vector Db Ids
+          description: List of vector database IDs to search in
+        search_type:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Search Type
+          description: The type of search to perform (vector, keyword, hybrid)
+        max_results:
+          anyOf:
+            - type: integer
+              maximum: 1000
+              minimum: 1
+            - type: 'null'
+          title: Max Results
+          description: The maximum number of results to return
+        filters:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Filters
+          description: Filters to apply to the search results
+        meta:
+          anyOf:
+            - $ref: '#/components/schemas/Meta'
+            - type: 'null'
+          description: >-
+            Pagination metadata. Limit and page number to return a subset of
+            results.
+      type: object
+      required:
+        - query
+      title: VectorSearchRequestSchema
+      description: Schema for vector search request.
+    PaginatedResponse_VectorSearchResult_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/VectorSearchResult'
+          type: array
+          title: Data
+          description: List of items for the current page
+        meta:
+          $ref: '#/components/schemas/PaginationInfo'
+          description: Pagination metadata
+      type: object
+      required:
+        - data
+        - meta
+      title: PaginatedResponse[VectorSearchResult]
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    Meta:
+      properties:
+        limit:
+          type: integer
+          minimum: 1
+          title: Limit
+          description: Number of results per page
+          default: 20
+        page:
+          type: integer
+          minimum: 1
+          title: Page
+          description: Page number
+          default: 1
+      type: object
+      title: Meta
+      description: Inline metadata schema for pagination.
+    VectorSearchResult:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the search result document
+        content:
+          type: string
+          title: Content
+          description: Content text of the document
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the document
+        meta_data:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Meta Data
+          description: Metadata associated with the document
+        usage:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Usage
+          description: Usage statistics (e.g., token counts)
+        reranking_score:
+          anyOf:
+            - type: number
+              maximum: 1
+              minimum: 0
+            - type: 'null'
+          title: Reranking Score
+          description: Reranking score for relevance
+        content_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Content Id
+          description: ID of the source content
+        content_origin:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Content Origin
+          description: Origin URL or source of the content
+        size:
+          anyOf:
+            - type: integer
+              minimum: 0
+            - type: 'null'
+          title: Size
+          description: Size of the content in bytes
+      type: object
+      required:
+        - id
+        - content
+      title: VectorSearchResult
+      description: Schema for search result documents.
+    PaginationInfo:
+      properties:
+        page:
+          type: integer
+          minimum: 0
+          title: Page
+          description: Current page number (0-indexed)
+          default: 0
+        limit:
+          type: integer
+          minimum: 1
+          title: Limit
+          description: Number of items per page
+          default: 20
+        total_pages:
+          type: integer
+          minimum: 0
+          title: Total Pages
+          description: Total number of pages
+          default: 0
+        total_count:
+          type: integer
+          minimum: 0
+          title: Total Count
+          description: Total count of items
+          default: 0
+        search_time_ms:
+          type: number
+          minimum: 0
+          title: Search Time Ms
+          description: Search execution time in milliseconds
+          default: 0
+      type: object
+      title: PaginationInfo
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agno.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Get Config
+
+> Retrieve available readers, chunkers, and configuration options for content processing. This endpoint provides metadata about supported file types, processing strategies, and filters.
+
+
+
+## OpenAPI
+
+````yaml get /knowledge/config
+openapi: 3.1.0
+info:
+  title: Agno API Reference
+  description: The all-in-one, private, secure agent platform that runs in your cloud.
+  version: 2.5.6
+servers: []
+security: []
+paths:
+  /knowledge/config:
+    get:
+      tags:
+        - Knowledge
+      summary: Get Config
+      description: >-
+        Retrieve available readers, chunkers, and configuration options for
+        content processing. This endpoint provides metadata about supported file
+        types, processing strategies, and filters.
+      operationId: get_knowledge_config
+      parameters:
+        - name: db_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Database ID to use
+            title: Db Id
+          description: Database ID to use
+        - name: knowledge_id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            description: Knowledge base ID to use
+            title: Knowledge Id
+          description: Knowledge base ID to use
+      responses:
+        '200':
+          description: Knowledge configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigResponseSchema'
+              example:
+                readers:
+                  website:
+                    id: website
+                    name: WebsiteReader
+                    description: Reads website files
+                    chunkers:
+                      - AgenticChunker
+                      - DocumentChunker
+                      - RecursiveChunker
+                      - SemanticChunker
+                      - FixedSizeChunker
+                  firecrawl:
+                    id: firecrawl
+                    name: FirecrawlReader
+                    description: Reads firecrawl files
+                    chunkers:
+                      - SemanticChunker
+                      - FixedSizeChunker
+                      - AgenticChunker
+                      - DocumentChunker
+                      - RecursiveChunker
+                  youtube:
+                    id: youtube
+                    name: YoutubeReader
+                    description: Reads youtube files
+                    chunkers:
+                      - RecursiveChunker
+                      - AgenticChunker
+                      - DocumentChunker
+                      - SemanticChunker
+                      - FixedSizeChunker
+                  web_search:
+                    id: web_search
+                    name: WebSearchReader
+                    description: Reads web_search files
+                    chunkers:
+                      - AgenticChunker
+                      - DocumentChunker
+                      - RecursiveChunker
+                      - SemanticChunker
+                      - FixedSizeChunker
+                  arxiv:
+                    id: arxiv
+                    name: ArxivReader
+                    description: Reads arxiv files
+                    chunkers:
+                      - FixedSizeChunker
+                      - AgenticChunker
+                      - DocumentChunker
+                      - RecursiveChunker
+                      - SemanticChunker
+                  csv:
+                    id: csv
+                    name: CsvReader
+                    description: Reads csv files
+                    chunkers:
+                      - RowChunker
+                      - FixedSizeChunker
+                      - AgenticChunker
+                      - DocumentChunker
+                      - RecursiveChunker
+                  docx:
+                    id: docx
+                    name: DocxReader
+                    description: Reads docx files
+                    chunkers:
+                      - DocumentChunker
+                      - FixedSizeChunker
+                      - SemanticChunker
+                      - AgenticChunker
+                      - RecursiveChunker
+                  gcs:
+                    id: gcs
+                    name: GcsReader
+                    description: Reads gcs files
+                    chunkers:
+                      - FixedSizeChunker
+                      - AgenticChunker
+                      - DocumentChunker
+                      - RecursiveChunker
+                      - SemanticChunker
+                  json:
+                    id: json
+                    name: JsonReader
+                    description: Reads json files
+                    chunkers:
+                      - FixedSizeChunker
+                      - AgenticChunker
+                      - DocumentChunker
+                      - RecursiveChunker
+                      - SemanticChunker
+                  markdown:
+                    id: markdown
+                    name: MarkdownReader
+                    description: Reads markdown files
+                    chunkers:
+                      - MarkdownChunker
+                      - DocumentChunker
+                      - AgenticChunker
+                      - RecursiveChunker
+                      - SemanticChunker
+                      - FixedSizeChunker
+                  pdf:
+                    id: pdf
+                    name: PdfReader
+                    description: Reads pdf files
+                    chunkers:
+                      - DocumentChunker
+                      - FixedSizeChunker
+                      - AgenticChunker
+                      - SemanticChunker
+                      - RecursiveChunker
+                  text:
+                    id: text
+                    name: TextReader
+                    description: Reads text files
+                    chunkers:
+                      - CodeChunker
+                      - FixedSizeChunker
+                      - AgenticChunker
+                      - DocumentChunker
+                      - RecursiveChunker
+                      - SemanticChunker
+                readersForType:
+                  url:
+                    - url
+                    - website
+                    - firecrawl
+                    - youtube
+                    - web_search
+                    - gcs
+                  youtube:
+                    - youtube
+                  text:
+                    - web_search
+                  topic:
+                    - arxiv
+                  file:
+                    - csv
+                    - gcs
+                  .csv:
+                    - csv
+                    - field_labeled_csv
+                  .xlsx:
+                    - excel
+                  .xls:
+                    - excel
+                  application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+                    - excel
+                  application/vnd.ms-excel:
+                    - excel
+                  .docx:
+                    - docx
+                  .doc:
+                    - docx
+                  .json:
+                    - json
+                  .md:
+                    - markdown
+                  .pdf:
+                    - pdf
+                  .txt:
+                    - text
+                chunkers:
+                  AgenticChunker:
+                    key: AgenticChunker
+                    name: AgenticChunker
+                    description: >-
+                      Chunking strategy that uses an LLM to determine natural
+                      breakpoints in the text
+                    metadata:
+                      chunk_size: 5000
+                  CodeChunker:
+                    key: CodeChunker
+                    name: CodeChunker
+                    description: >-
+                      The CodeChunker splits code into chunks based on its
+                      structure, leveraging Abstract Syntax Trees (ASTs) to
+                      create contextually relevant segments
+                    metadata:
+                      chunk_size: 2048
+                  DocumentChunker:
+                    key: DocumentChunker
+                    name: DocumentChunker
+                    description: >-
+                      A chunking strategy that splits text based on document
+                      structure like paragraphs and sections
+                    metadata:
+                      chunk_size: 5000
+                      chunk_overlap: 0
+                  FixedSizeChunker:
+                    key: FixedSizeChunker
+                    name: FixedSizeChunker
+                    description: >-
+                      Chunking strategy that splits text into fixed-size chunks
+                      with optional overlap
+                    metadata:
+                      chunk_size: 5000
+                      chunk_overlap: 0
+                  MarkdownChunker:
+                    key: MarkdownChunker
+                    name: MarkdownChunker
+                    description: >-
+                      A chunking strategy that splits markdown based on
+                      structure like headers, paragraphs and sections
+                    metadata:
+                      chunk_size: 5000
+                      chunk_overlap: 0
+                  RecursiveChunker:
+                    key: RecursiveChunker
+                    name: RecursiveChunker
+                    description: >-
+                      Chunking strategy that recursively splits text into chunks
+                      by finding natural break points
+                    metadata:
+                      chunk_size: 5000
+                      chunk_overlap: 0
+                  RowChunker:
+                    key: RowChunker
+                    name: RowChunker
+                    description: RowChunking chunking strategy
+                    metadata: {}
+                  SemanticChunker:
+                    key: SemanticChunker
+                    name: SemanticChunker
+                    description: >-
+                      Chunking strategy that splits text into semantic chunks
+                      using chonkie
+                    metadata:
+                      chunk_size: 5000
+                vector_dbs:
+                  - id: vector_db_1
+                    name: Vector DB 1
+                    description: Vector DB 1 description
+                    search_types:
+                      - vector
+                      - keyword
+                      - hybrid
+                filters:
+                  - filter_tag_1
+                  - filter_tag2
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    ConfigResponseSchema:
+      properties:
+        readers:
+          anyOf:
+            - additionalProperties:
+                $ref: '#/components/schemas/ReaderSchema'
+              type: object
+            - type: 'null'
+          title: Readers
+          description: Available content readers
+        readersForType:
+          anyOf:
+            - additionalProperties:
+                items:
+                  type: string
+                type: array
+              type: object
+            - type: 'null'
+          title: Readersfortype
+          description: Mapping of content types to reader IDs
+        chunkers:
+          anyOf:
+            - additionalProperties:
+                $ref: '#/components/schemas/ChunkerSchema'
+              type: object
+            - type: 'null'
+          title: Chunkers
+          description: Available chunking strategies
+        filters:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Filters
+          description: Available filter tags
+        vector_dbs:
+          anyOf:
+            - items:
+                $ref: '#/components/schemas/VectorDbSchema'
+              type: array
+            - type: 'null'
+          title: Vector Dbs
+          description: Configured vector databases
+        remote_content_sources:
+          anyOf:
+            - items:
+                $ref: '#/components/schemas/RemoteContentSourceSchema'
+              type: array
+            - type: 'null'
+          title: Remote Content Sources
+          description: Configured remote content sources (S3, GCS, SharePoint, GitHub)
+      type: object
+      title: ConfigResponseSchema
+    BadRequestResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: BadRequestResponse
+      example:
+        detail: Bad request
+        error_code: BAD_REQUEST
+    UnauthenticatedResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: UnauthenticatedResponse
+      example:
+        detail: Unauthenticated access
+        error_code: UNAUTHENTICATED
+    NotFoundResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: NotFoundResponse
+      example:
+        detail: Not found
+        error_code: NOT_FOUND
+    ValidationErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: ValidationErrorResponse
+      example:
+        detail: Validation error
+        error_code: VALIDATION_ERROR
+    InternalServerErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+          description: Error detail message
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+          description: Error code for categorization
+      type: object
+      required:
+        - detail
+      title: InternalServerErrorResponse
+      example:
+        detail: Internal server error
+        error_code: INTERNAL_SERVER_ERROR
+    ReaderSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the reader
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the reader
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the reader's capabilities
+        chunkers:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Chunkers
+          description: List of supported chunking strategies
+      type: object
+      required:
+        - id
+      title: ReaderSchema
+    ChunkerSchema:
+      properties:
+        key:
+          type: string
+          title: Key
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+      type: object
+      required:
+        - key
+      title: ChunkerSchema
+    VectorDbSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the vector database
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Name of the vector database
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Description
+          description: Description of the vector database
+        search_types:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - type: 'null'
+          title: Search Types
+          description: List of supported search types (vector, keyword, hybrid)
+      type: object
+      required:
+        - id
+      title: VectorDbSchema
+    RemoteContentSourceSchema:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the content source
+        name:
+          type: string
+          title: Name
+          description: Display name for the content source
+        type:
+          type: string
+          title: Type
+          description: Type of content source (s3, gcs, sharepoint, github, azureblob)
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
+          description: Custom metadata for the content source
+        prefix:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Prefix
+          description: Default path prefix for this source
+      type: object
+      required:
+        - id
+        - name
+        - type
+      title: RemoteContentSourceSchema
+      description: Schema for remote content source configuration.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+
+````
+
+Built with [Mintlify](https://mintlify.com).
+

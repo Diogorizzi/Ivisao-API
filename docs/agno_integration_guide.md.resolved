@@ -1,0 +1,93 @@
+# Guia de Integração Agno ↔ Dartha
+
+Este documento descreve os requisitos técnicos que sua API Agno (geralmente escrita em Python/FastAPI) deve seguir para funcionar perfeitamente dentro da plataforma Dartha.
+
+---
+
+## 1. Endpoints Obrigatórios
+
+A Dartha espera que sua API exponha os seguintes caminhos (baseados no padrão de rotas da Agno):
+
+| Método | Rota | Descrição |
+| :--- | :--- | :--- |
+| [GET](file:///d:/Documentos/Projetos/Dartha%20front%20e%20back/Dartha/src/app/api/agno-proxy/%5B...path%5D/route.ts#103-159) | `/health` | Verificação de status (deve retornar 200 OK). |
+| [GET](file:///d:/Documentos/Projetos/Dartha%20front%20e%20back/Dartha/src/app/api/agno-proxy/%5B...path%5D/route.ts#103-159) | `/agents` | Lista de agentes disponíveis para o usuário escolher. |
+| [POST](file:///d:/Documentos/Projetos/Dartha%20front%20e%20back/Dartha/src/app/api/agno-proxy/%5B...path%5D/route.ts#5-102) | `/agent/run` | Execução de um agente (deve suportar streaming SSE). |
+| [GET](file:///d:/Documentos/Projetos/Dartha%20front%20e%20back/Dartha/src/app/api/agno-proxy/%5B...path%5D/route.ts#103-159) | `/teams` | (Opcional) Lista de times multi-agentes. |
+| [POST](file:///d:/Documentos/Projetos/Dartha%20front%20e%20back/Dartha/src/app/api/agno-proxy/%5B...path%5D/route.ts#5-102) | `/team/run` | (Opcional) Execução de um time (streaming SSE). |
+| [GET](file:///d:/Documentos/Projetos/Dartha%20front%20e%20back/Dartha/src/app/api/agno-proxy/%5B...path%5D/route.ts#103-159) | `/workflows` | (Opcional) Lista de workflows disponíveis. |
+| [POST](file:///d:/Documentos/Projetos/Dartha%20front%20e%20back/Dartha/src/app/api/agno-proxy/%5B...path%5D/route.ts#5-102) | `/workflow/run` | (Opcional) Execução de um workflow (streaming SSE). |
+
+---
+
+## 2. Payload de Requisição (POST)
+
+Quando um usuário envia uma mensagem na Dartha, o sistema faz o proxy da requisição para o seu endpoint `/run`. O corpo da requisição terá este formato:
+
+```json
+{
+  "message": "Olá, como você pode me ajudar?",
+  "stream": true,
+  "session_id": "id-da-sessao-dartha",
+  "monitor": true,
+  "user_id": "user_2pk...", 
+  "metadata": {
+    "user_name": "João Silva",
+    "origin_domain": "empresa.dartha.io"
+  }
+}
+```
+
+### O que sua API deve fazer com isso:
+- **`user_id`**: Use este ID para persistir o histórico no seu banco de dados Agno vinculado ao usuário correto.
+- **`metadata`**: Contém informações adicionais do contexto Dartha para personalização.
+- **`session_id`**: A Dartha envia o ID da conversa interna dela. Se você usar este ID na sua `Agno Session`, o histórico ficará perfeitamente sincronizado.
+
+---
+
+## 3. Resposta e Streaming (SSE)
+
+Para uma experiência de chat fluida, a Dartha exige que o streaming esteja habilitado.
+
+1. Sua API deve retornar o `Content-Type: text/event-stream`.
+2. Os eventos devem seguir o padrão `data: { ... }`.
+3. A Dartha processa especificamente os eventos do tipo [RunEvent](file:///d:/Documentos/Projetos/Dartha%20front%20e%20back/Dartha/src/lib/agno/types.ts#37-45).
+
+**Exemplo de chunk SSE esperado:**
+```text
+data: {"event": "run_step", "type": "text", "content": "Olá"}
+data: {"event": "run_step", "type": "text", "content": " tudo bem?"}
+data: {"event": "run_completed"}
+```
+
+---
+
+## 4. Autenticação
+
+Se você configurar um **Token de Autenticação** no painel administrativo da Dartha, todas as requisições enviadas para sua API incluirão o seguinte header:
+
+```text
+Authorization: Bearer SEU_TOKEN_AQUI
+```
+
+Sua API deve validar este token para garantir que apenas o tráfego vindo da Dartha seja processado.
+
+---
+
+## 5. Dicas de Implementação (Python)
+
+Se você estiver usando a biblioteca `agno` oficial em Python com FastAPI, certifique-se de expor as rotas usando o `ApiRouter` ou defina manualmente conforme acima. 
+
+Exemplo de como ler o `user_id` no seu Agent:
+
+```python
+from agno.agent import Agent
+
+def get_agent(user_id: str):
+    return Agent(
+        user_id=user_id, # Agno usa isso para carregar a sessão correta
+        ...
+    )
+```
+
+**Importante:** A Dartha fará o proxy via servidor (Node.js), então você não precisa se preocupar com problemas de CORS complicados se a URL for pública e acessível pelo servidor da Dartha.

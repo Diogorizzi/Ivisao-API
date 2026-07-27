@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"feat: add config directory with company and agents templates:*)",
+      "Bash(python -c \"import yaml; yaml.safe_load\\(open\\(''config/company.yaml'', ''r'', encoding=''utf-8''\\)\\); print\\(''company.yaml: Valid YAML syntax''\\)\")",
+      "Bash(python -c \"import yaml; yaml.safe_load\\(open\\(''config/agents.example.yaml'', ''r'', encoding=''utf-8''\\)\\); print\\(''agents.example.yaml: Valid YAML syntax''\\)\")",
+      "Bash(node -e \"const yaml = require\\(''js-yaml''\\); const fs = require\\(''fs''\\); try { yaml.load\\(fs.readFileSync\\(''config/company.yaml'', ''utf8''\\)\\); console.log\\(''company.yaml: Valid YAML''\\); } catch\\(e\\) { console.log\\(''ERROR:'', e.message\\); process.exit\\(1\\); }\")",
+      "Bash(uv pip:*)",
+      "Bash(.venv/Scripts/python.exe -c \"from src.app import app; print\\(''App importado com sucesso''\\)\")",
+      "Bash(.venv/Scripts/python.exe -c \"import sys; print\\(sys.prefix\\)\")",
+      "Bash(.venv/Scripts/python.exe -c \"from src.app import app; print\\(''App importado com sucesso!''\\)\")",
+      "Bash(.venv/Scripts/python.exe test_agui.py)",
+      "Bash(grep -r \"class AgentOS\" .venv/Lib/site-packages/agno/os/*.py)",
+      "Bash(.venv/Scripts/python.exe -c \":*)",
+      "Bash(netstat -ano)",
+      "Bash(curl -f http://localhost:8000/api/v1/heartbeat)",
+      "Bash(docker exec:*)",
+      "Bash(mkdir -p d:/tmp/chromadb_backup)",
+      "Bash(docker cp:*)",
+      "Bash(curl -s http://localhost:8000/api/v1/version)",
+      "Bash(curl -s http://localhost:8000/api/v2)",
+      "Bash(docker-compose down:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose ps:*)",
+      "Bash(docker-compose stop:*)",
+      "Bash(docker-compose start:*)",
+      "Bash(curl -s http://localhost:8000/api/v2/collections)",
+      "Bash(.venv/Scripts/python.exe d:/tmp/test_chroma.py)",
+      "Bash(.venv/Scripts/python.exe d:/tmp/test_agents.py)",
+      "Bash(iconv -f UTF-8 -t ASCII//TRANSLIT)",
+      "Bash(timeout 60 .venv/Scripts/python.exe d:/tmp/test_agent_rag_final.py)",
+      "Bash(timeout 90 .venv/Scripts/python.exe d:/tmp/test_final_completo.py)",
+      "Bash(timeout 45 .venv/Scripts/python.exe -c \":*)"
+    ]
+  }
+}

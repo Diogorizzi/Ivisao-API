@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: agent_api_postgres
+    environment:
+      POSTGRES_USER: agentapi
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dev_secret}
+      POSTGRES_DB: agentapi
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentapi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: agent_api_chromadb
+    ports:
+      - "8000:8000"
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+    volumes:
+      - chroma_data:/data
+    restart: unless-stopped
+
+  api:
+    build: .
+    container_name: agent_api
+    ports:
+      - "${PORT:-7777}:7777"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://agentapi:${POSTGRES_PASSWORD:-dev_secret}@db:5432/agentapi
+      SQLITE_DB_PATH: /app/data/agno.db
+      CHROMA_HOST: chromadb
+      CHROMA_PORT: "8000"
+    volumes:
+      - app_data:/app/data
+      - ./config:/app/config:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  app_data:
+  chroma_data:
