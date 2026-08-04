@@ -24,11 +24,13 @@ from src.admin.auth import (
 )
 from src.admin.queue import process_document, sse_generator
 from src.knowledge.base import CHROMA_HOST, CHROMA_PORT, CHROMA_COLLECTION
+from src.config.settings import settings
 
 router = APIRouter(tags=["Admin"])
 
 _templates_dir = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(_templates_dir))
+templates.env.globals["company_name"] = settings.COMPANY_NAME
 
 RAG_DATA_DIR = Path("data/RAG")
 ALLOWED_EXTENSIONS = {
