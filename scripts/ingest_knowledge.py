@@ -9,11 +9,10 @@ from rich.panel import Panel
 from rich.progress import Progress
 from rich.table import Table
 
-# Suporte GenAI e Embeddings (Google e Chroma)
+# Suporte OpenAI Embeddings e Chroma
 import chromadb
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
+from openai import OpenAI
 
 # Extratores locais
 from pypdf import PdfReader
@@ -24,44 +23,46 @@ console = Console()
 # Configuração Base
 load_dotenv()
 RAG_DATA_DIR = Path("data/RAG")
-GEMINI_API_KEY = os.environ.get("GOOGLE_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
-# Inicializa o Client Oficial do Gemini (Multimodal Native)
-if GEMINI_API_KEY:
-    genai_client = genai.Client(api_key=GEMINI_API_KEY)
-EMBEDDING_MODEL = "gemini-embedding-2-preview"
+openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+EMBEDDING_MODEL = "text-embedding-3-small"
+EMBEDDING_DIMENSIONS = 1536
 
-# Inicializa ChromaDB apontando para o Docker Client/Server configurado
-try:
-    chroma_client = chromadb.HttpClient(host="localhost", port=8000)
-    console.print("[+] Conectado ao ChromaDB via HTTP no Docker (localhost:8000)", style="green")
-except Exception as e:
-    console.print("[-] Falhou em conectar ao Chroma Server, usando modo Local persistente.", style="yellow")
-    chroma_client = chromadb.PersistentClient(path="./chroma_data")
+CHROMA_HOST = os.environ.get("CHROMA_HOST", "localhost")
+CHROMA_PORT = int(os.environ.get("CHROMA_PORT", "8000"))
+CHROMA_COLLECTION = os.environ.get("CHROMA_COLLECTION", "dartha_knowledge")
+CHROMA_PERSIST_PATH = os.environ.get("CHROMA_PERSIST_PATH", "./chroma_data")
 
 def init_collection():
-    """Garante a inicialização segura da coleção e reseta se necessário."""
+    """
+    Tenta o servidor ChromaDB via HTTP (Docker); se indisponível, cai para o
+    modo local persistente (mesmo diretório usado por src/knowledge/base.py).
+    """
     try:
-        collection = chroma_client.get_or_create_collection(
-            name="dartha_knowledge",
-            metadata={"hnsw:space": "cosine"} # O Gemini model gera embeddings otimizados para Similaridade de Coseno
+        client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+        collection = client.get_or_create_collection(
+            name=CHROMA_COLLECTION,
+            metadata={"hnsw:space": "cosine"}  # embeddings da OpenAI são otimizados para Similaridade de Coseno
         )
+        console.print(f"[+] Conectado ao ChromaDB via HTTP no Docker ({CHROMA_HOST}:{CHROMA_PORT})", style="green")
         return collection
-    except Exception as e:
-        console.print(f"[!] Erro de coleção: {e}", style="red")
-        return chroma_client.create_collection("dartha_knowledge")
-
-def generate_embedding(content_data) -> list[float]:
-    """Chama a API do Gemini Embeddings 2 para textos ou multimídia"""
-    result = genai_client.models.embed_content(
-        model=EMBEDDING_MODEL,
-        contents=[content_data],
-        config=types.EmbedContentConfig(
-            task_type="RETRIEVAL_DOCUMENT",
-            output_dimensionality=768 # Reduz para 768 ajudando na performance do banco Dartha
+    except Exception:
+        console.print(f"[-] Chroma Server indisponível, usando modo Local persistente ({CHROMA_PERSIST_PATH}).", style="yellow")
+        client = chromadb.PersistentClient(path=CHROMA_PERSIST_PATH)
+        return client.get_or_create_collection(
+            name=CHROMA_COLLECTION,
+            metadata={"hnsw:space": "cosine"}
         )
+
+def generate_embedding(content_data: str) -> list[float]:
+    """Chama a API de Embeddings da OpenAI para textos"""
+    result = openai_client.embeddings.create(
+        model=EMBEDDING_MODEL,
+        input=content_data,
+        dimensions=EMBEDDING_DIMENSIONS,
     )
-    return result.embeddings[0].values
+    return result.data[0].embedding
 
 def process_and_chunk_file(file_path: Path):
     """
@@ -99,32 +100,25 @@ def process_and_chunk_file(file_path: Path):
             console.print(f"[!] Falha lendo PDF {file_path.name}: {err}", style="red")
 
     elif ext in [".png", ".jpg", ".jpeg"]:
-        with open(file_path, "rb") as bf:
-            image_bytes = bf.read()
-            mime = f"image/{ext.replace('.', '')}"
-            if ext == ".jpg": mime = "image/jpeg"
-            
-            chunks.append({
-                 "data": types.Part.from_bytes(data=image_bytes, mime_type=mime),
-                 "text_representation": f"[IMAGEM MULTIMODAL: {file_path.name}]",
-                 "chunk_id": f"{file_path.name}-image"
-            })
-            
+        # text-embedding-3-small é um modelo de texto — não suporta embeddings
+        # multimodais diretos de imagem. Pular por enquanto.
+        console.print(f"    [!] Imagem ignorada (embedding de texto não suporta imagens): {file_path.name}", style="yellow")
+
     return chunks
 
 def run_ingestion():
-    if not GEMINI_API_KEY:
-         console.print("[ERRO] Variável GOOGLE_API_KEY não foi encontrada ou é inválida no ambiente (.env).", style="red bold")
+    if not OPENAI_API_KEY:
+         console.print("[ERRO] Variável OPENAI_API_KEY não foi encontrada ou é inválida no ambiente (.env).", style="red bold")
          return
 
     # Rich header panel
     console.print(Panel.fit(
-        "[bold cyan]Dartha Ingestion Parser - Gemini 2 (Multimodal)[/bold cyan]",
+        "[bold cyan]Ivisao Ingestion Parser - OpenAI text-embedding-3-small[/bold cyan]",
         border_style="cyan"
     ))
 
     collection = init_collection()
-    console.print("[+] Conectado à Collection 'dartha_knowledge'", style="green")
+    console.print(f"[+] Conectado à Collection '{CHROMA_COLLECTION}'", style="green")
 
     if not RAG_DATA_DIR.exists():
         console.print(f"[!] {RAG_DATA_DIR} não existe.", style="red")
@@ -151,8 +145,8 @@ def run_ingestion():
                         try:
                             vector = generate_embedding(chunk["data"])
                             time.sleep(1) # Pausa estratégica leve para evitar Rate Limit 429
-                        except Exception as gemini_err:
-                            console.print(f"    [X] Erro de API no arquivo {file_path.name}: {gemini_err}", style="red")
+                        except Exception as embed_err:
+                            console.print(f"    [X] Erro de API no arquivo {file_path.name}: {embed_err}", style="red")
                             continue
 
                         try:

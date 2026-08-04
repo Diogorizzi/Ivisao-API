@@ -53,11 +53,11 @@ def validate_config():
         for agent in config.agents:
             # Verifica se departamento existe
             if agent.features.rag and agent.department:
-                dept_path = Path(f"data/{agent.department}")
+                dept_path = Path(f"data/RAG/{agent.department}")
                 if not dept_path.exists():
                     warnings.append(
                         f"Agente '{agent.name}': departamento '{agent.department}' "
-                        f"não existe em data/"
+                        f"não existe em data/RAG/"
                     )
 
             # Verifica skills duplicadas

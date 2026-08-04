@@ -7,7 +7,7 @@ from typing import List, Optional, Dict
 from agno.knowledge.knowledge import Knowledge
 from agno.knowledge.reader.base import Reader
 from agno.knowledge.document import Document
-from agno.knowledge.embedder.google import GeminiEmbedder
+from agno.knowledge.embedder.openai import OpenAIEmbedder
 from agno.db.sqlite.sqlite import SqliteDb
 
 # ChromaDB from Agno (vector db wrapper)
@@ -23,16 +23,27 @@ from src.tools.file_parser import convert_file_to_text
 CHROMA_HOST = os.getenv("CHROMA_HOST", "localhost")
 CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
 CHROMA_COLLECTION = os.getenv("CHROMA_COLLECTION", "dartha_knowledge")
+# Fallback local (sem Docker) — mesmo diretório usado por scripts/ingest_knowledge.py
+CHROMA_PERSIST_PATH = os.getenv("CHROMA_PERSIST_PATH", "./chroma_data")
 
 # Mapeamento de departamentos: agents.yaml -> ChromaDB
+# IMPORTANTE: a chave e o valor são o mesmo texto (identidade), pois esse é
+# também o nome exato da pasta em data/RAG/{departamento}/ e o valor gravado
+# no metadata "department" pelo scripts/ingest_knowledge.py. Se algum dia
+# quiser exibir um nome "bonito" diferente do slug, primeiro garanta que
+# ingest_knowledge.py grave esse mesmo nome no metadata — senão a busca por
+# departamento para de encontrar documentos.
 DEPARTMENT_MAPPING = {
-    "marketing": "Marketing",
-    "juridico": "Jurídico",
-    "finance": "Financeiro",
-    "hr": "RH",
-    "sales": "Vendas",
-    "operations": "Operações",
-    "it": "TI",
+    "recepcao": "recepcao",
+    "consultorios": "consultorios",
+    "sala-exames": "sala-exames",
+    "orientacao-cirurgica": "orientacao-cirurgica",
+    "administrativo": "administrativo",
+    "faturamento": "faturamento",
+    "financeiro": "financeiro",
+    "central-guias": "central-guias",
+    "farmacia": "farmacia",
+    "centro-cirurgico": "centro-cirurgico",
     "geral": None,  # Geral não tem filtro
 }
 
@@ -72,26 +83,46 @@ def _resolve_dept_display_name(slug: str) -> Optional[str]:
 
 class DarthaHttpChromaDb(ChromaDb):
     """
-    Subclasse do ChromaDb do Agno que força conexão HTTP ao Docker.
-    Injeta o HttpClient antes do primeiro uso para evitar usar o Client padrão
-    (que tentaria criar uma instância local/persistente).
+    Subclasse do ChromaDb do Agno.
+    Tenta conectar ao servidor ChromaDB via HTTP (Docker); se indisponível,
+    cai automaticamente para o modo local persistente (mesmo diretório usado
+    por scripts/ingest_knowledge.py), evitando exigir Docker em desenvolvimento.
     """
 
     def __init__(self, department: str = None, **kwargs):
         # Resolve slug para display_name: DB first, fallback DEPARTMENT_MAPPING
         self._department = _resolve_dept_display_name(department) if department else None
         super().__init__(**kwargs)
-        # Pre-injeta o HttpClient para que o property `client` não crie um default
+        self._client = None
+        self._collection = None
+        mode = None
+
+        # 1. Tenta o servidor ChromaDB via HTTP (Docker)
         try:
-            self._client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
-            self._collection = self._client.get_collection(name=self.collection_name)
-            count = self._collection.count()
-            dept_info = f" (filtro: {self._department})" if self._department else " (sem filtro)"
-            print(f"[DarthaKnowledge] Conectado a '{self.collection_name}' — {count} chunks{dept_info}")
-        except Exception as e:
-            print(f"[DarthaKnowledge] AVISO: ChromaDB indisponível — RAG desabilitado ({e})")
-            self._client = None
-            self._collection = None
+            client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+            collection = client.get_or_create_collection(
+                name=self.collection_name,
+                metadata={"hnsw:space": "cosine"},
+            )
+            self._client, self._collection = client, collection
+            mode = f"HTTP (Docker {CHROMA_HOST}:{CHROMA_PORT})"
+        except Exception:
+            # 2. Fallback: modo local persistente (sem Docker)
+            try:
+                client = chromadb.PersistentClient(path=CHROMA_PERSIST_PATH)
+                collection = client.get_or_create_collection(
+                    name=self.collection_name,
+                    metadata={"hnsw:space": "cosine"},
+                )
+                self._client, self._collection = client, collection
+                mode = f"local persistente ({CHROMA_PERSIST_PATH})"
+            except Exception as e:
+                print(f"[DarthaKnowledge] AVISO: ChromaDB indisponível — RAG desabilitado ({e})")
+                return
+
+        count = self._collection.count()
+        dept_info = f" (filtro: {self._department})" if self._department else " (sem filtro)"
+        print(f"[DarthaKnowledge] Conectado a '{self.collection_name}' via {mode} — {count} chunks{dept_info}")
 
     def search(self, query: str, limit: int = 5, filters=None) -> List[Document]:
         if self._collection is None:
@@ -137,11 +168,11 @@ def get_knowledge_base(department: str = None, num_documents: int = 5) -> Knowle
     if cache_key in _knowledge_instances:
         return _knowledge_instances[cache_key]
 
-    # Embedder Gemini 2 — 768 dimensões (igual ao script de ingestão)
-    embedder = GeminiEmbedder(
-        id="gemini-embedding-2-preview",
-        api_key=settings.GOOGLE_API_KEY,
-        dimensions=768,
+    # Embedder OpenAI text-embedding-3-small — 1536 dimensões (igual ao script de ingestão)
+    embedder = OpenAIEmbedder(
+        id="text-embedding-3-small",
+        api_key=settings.OPENAI_API_KEY,
+        dimensions=1536,
     )
 
     vector_db = DarthaHttpChromaDb(

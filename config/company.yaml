@@ -1,15 +1,15 @@
 # config/company.yaml
 # Informações da Empresa
-company_name: "Dartha"
-company_description: "Dartha é um ecossistema de IA para líderes e empresários focado em implementação correta de Inteligência Artificial em seus negócios."
+company_name: "Instituto da Visão"
+company_description: "Instituto da Visão é uma clínica oftalmológica especializada em cirurgias de catarata e cuidados com a saúde ocular, com atendimento humanizado e foco em excelência clínica."
 # Configurações Globais
-default_model: "gpt-5.4-mini"
+default_model: "gpt-4o-mini"
 default_temperature: 1.0
 
 # Opcional: Branding (para usar em prompts)
 company_values:
-  - "Inovação"
-  - "Excelência"
-  - "Transparência"
+  - "Cuidado humanizado"
+  - "Excelência clínica"
+  - "Confiabilidade"
 
-company_tone: "profissional, direto e amigável"
+company_tone: "profissional, acolhedor e claro"
