@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistentes — Instituto da Visão</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue: #0f6e8c;
+    --blue-dark: #0b5266;
+    --blue-light: #e6f3f6;
+    --bg: #f4f7f8;
+    --panel: #ffffff;
+    --border: #dde5e7;
+    --text: #1f2a2e;
+    --muted: #6b7c80;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ---------- Sidebar ---------- */
+  #sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+  #sidebar header {
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  #sidebar header .brand {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--blue-dark);
+  }
+  #sidebar header .sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  #dept-list {
+    list-style: none;
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px;
+  }
+  #dept-list li {
+    padding: 11px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 2px;
+    transition: background .12s;
+  }
+  #dept-list li:hover { background: var(--blue-light); }
+  #dept-list li.active { background: var(--blue); color: #fff; font-weight: 600; }
+  #user-box {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  #user-box b { color: var(--text); }
+  #user-box a { color: var(--blue); cursor: pointer; text-decoration: none; }
+
+  /* ---------- Chat area ---------- */
+  #chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  #chat-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+  #chat-header .name { font-size: 16px; font-weight: 700; }
+  #chat-header .desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .empty-state {
+    margin: auto;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 320px;
+  }
+  .msg { max-width: 70%; padding: 11px 15px; border-radius: 14px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+  .msg.user { align-self: flex-end; background: var(--blue); color: #fff; border-bottom-right-radius: 4px; }
+  .msg.agent { align-self: flex-start; background: var(--panel); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+  .msg.pending { align-self: flex-start; color: var(--muted); font-style: italic; }
+  .msg.error { align-self: flex-start; background: #fdecea; border: 1px solid #f5c2c0; color: #a33; }
+
+  #input-bar {
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+    display: flex;
+    gap: 10px;
+  }
+  #input-bar textarea {
+    flex: 1;
+    resize: none;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    max-height: 120px;
+  }
+  #input-bar textarea:focus { border-color: var(--blue); }
+  #input-bar button {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0 22px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #input-bar button:hover { background: var(--blue-dark); }
+  #input-bar button:disabled { background: #a9c3ca; cursor: not-allowed; }
+
+  /* ---------- Name prompt modal ---------- */
+  #name-modal {
+    position: fixed; inset: 0; background: rgba(15,25,29,.5);
+    display: flex; align-items: center; justify-content: center; z-index: 10;
+  }
+  #name-modal .card {
+    background: #fff; border-radius: 12px; padding: 30px 32px; width: 100%; max-width: 340px;
+  }
+  #name-modal h2 { font-size: 16px; margin-bottom: 6px; }
+  #name-modal p { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+  #name-modal input {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
+    font-size: 14px; outline: none; margin-bottom: 14px;
+  }
+  #name-modal input:focus { border-color: var(--blue); }
+  #name-modal button {
+    width: 100%; background: var(--blue); color: #fff; border: none; border-radius: 8px;
+    padding: 11px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  #name-modal.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <header>
+    <div class="brand">👁 Instituto da Visão</div>
+    <div class="sub">Assistentes internos</div>
+  </header>
+  <ul id="dept-list"></ul>
+  <div id="user-box">
+    Conectado como <b id="user-name-label">—</b><br>
+    <a id="change-name">trocar nome</a>
+  </div>
+</div>
+
+<div id="chat-area">
+  <div id="chat-header">
+    <div class="name" id="chat-header-name">Selecione um assistente</div>
+    <div class="desc" id="chat-header-desc"></div>
+  </div>
+  <div id="messages"><div class="empty-state">Escolha um departamento ao lado para começar a conversar.</div></div>
+  <div id="input-bar">
+    <textarea id="input" rows="1" placeholder="Digite sua pergunta..." disabled></textarea>
+    <button id="send-btn" disabled>Enviar</button>
+  </div>
+</div>
+
+<div id="name-modal">
+  <div class="card">
+    <h2>Bem-vindo(a)</h2>
+    <p>Digite seu nome para identificar suas conversas com os assistentes.</p>
+    <input id="name-input" type="text" placeholder="Seu nome" maxlength="60">
+    <button id="name-submit">Entrar</button>
+  </div>
+</div>
+
+<script>
+const STORAGE_USER = "ivisao_chat_user";
+const STORAGE_SESSIONS = "ivisao_chat_sessions"; // { [agentId]: sessionId }
+
+let userName = localStorage.getItem(STORAGE_USER) || "";
+let sessions = JSON.parse(localStorage.getItem(STORAGE_SESSIONS) || "{}");
+let agents = [];
+let activeAgent = null;
+let conversations = {}; // { [agentId]: [{role, text}] }
+
+const nameModal = document.getElementById("name-modal");
+const nameInput = document.getElementById("name-input");
+const nameSubmit = document.getElementById("name-submit");
+const userNameLabel = document.getElementById("user-name-label");
+const changeNameLink = document.getElementById("change-name");
+const deptList = document.getElementById("dept-list");
+const messagesEl = document.getElementById("messages");
+const inputEl = document.getElementById("input");
+const sendBtn = document.getElementById("send-btn");
+const chatHeaderName = document.getElementById("chat-header-name");
+const chatHeaderDesc = document.getElementById("chat-header-desc");
+
+function showNameModal() {
+  nameModal.classList.remove("hidden");
+  nameInput.value = userName;
+  nameInput.focus();
+}
+function hideNameModal() { nameModal.classList.add("hidden"); }
+
+function saveUserName(name) {
+  userName = name.trim();
+  if (!userName) return;
+  localStorage.setItem(STORAGE_USER, userName);
+  userNameLabel.textContent = userName;
+  hideNameModal();
+}
+
+nameSubmit.addEventListener("click", () => saveUserName(nameInput.value));
+nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") saveUserName(nameInput.value); });
+changeNameLink.addEventListener("click", showNameModal);
+
+function persistSessions() {
+  localStorage.setItem(STORAGE_SESSIONS, JSON.stringify(sessions));
+}
+
+async function loadAgents() {
+  const res = await fetch("/agents");
+  agents = await res.json();
+  // Esconde o Super Admin da lista de uso diário da equipe (acesso total demais para o dia a dia)
+  agents = agents.filter(a => a.id !== "super-admin-assistant");
+  renderDeptList();
+}
+
+function displayName(agent) {
+  return agent.name.replace(/ Assistant$/, "");
+}
+
+function renderDeptList() {
+  deptList.innerHTML = "";
+  agents.forEach(agent => {
+    const li = document.createElement("li");
+    li.textContent = displayName(agent);
+    li.dataset.agentId = agent.id;
+    if (activeAgent && activeAgent.id === agent.id) li.classList.add("active");
+    li.addEventListener("click", () => selectAgent(agent));
+    deptList.appendChild(li);
+  });
+}
+
+function selectAgent(agent) {
+  activeAgent = agent;
+  renderDeptList();
+  chatHeaderName.textContent = displayName(agent);
+  chatHeaderDesc.textContent = agent.description || "";
+  inputEl.disabled = false;
+  sendBtn.disabled = false;
+  inputEl.focus();
+  renderMessages();
+}
+
+function renderMessages() {
+  const list = conversations[activeAgent.id] || [];
+  messagesEl.innerHTML = "";
+  if (list.length === 0) {
+    messagesEl.innerHTML = '<div class="empty-state">Envie uma mensagem para começar a conversar com ' + displayName(activeAgent) + '.</div>';
+    return;
+  }
+  list.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "msg " + m.role;
+    div.textContent = m.text;
+    messagesEl.appendChild(div);
+  });
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text || !activeAgent) return;
+
+  if (!conversations[activeAgent.id]) conversations[activeAgent.id] = [];
+  conversations[activeAgent.id].push({ role: "user", text });
+  inputEl.value = "";
+  autoResize();
+  renderMessages();
+
+  const pending = document.createElement("div");
+  pending.className = "msg pending";
+  pending.textContent = "digitando...";
+  messagesEl.appendChild(pending);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  sendBtn.disabled = true;
+
+  const form = new FormData();
+  form.append("message", text);
+  form.append("user_id", userName);
+  form.append("stream", "false");
+  if (sessions[activeAgent.id]) form.append("session_id", sessions[activeAgent.id]);
+
+  try {
+    const res = await fetch(`/agents/${encodeURIComponent(activeAgent.id)}/runs`, {
+      method: "POST",
+      body: form,
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if (data.session_id) {
+      sessions[activeAgent.id] = data.session_id;
+      persistSessions();
+    }
+    conversations[activeAgent.id].push({ role: "agent", text: data.content || "(sem resposta)" });
+  } catch (err) {
+    conversations[activeAgent.id].push({ role: "error", text: "Erro ao falar com o assistente: " + err.message });
+  } finally {
+    sendBtn.disabled = false;
+    renderMessages();
+  }
+}
+
+sendBtn.addEventListener("click", sendMessage);
+inputEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+function autoResize() {
+  inputEl.style.height = "auto";
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + "px";
+}
+inputEl.addEventListener("input", autoResize);
+
+// ---------- Boot ----------
+if (userName) {
+  userNameLabel.textContent = userName;
+} else {
+  showNameModal();
+}
+loadAgents();
+</script>
+</body>
+</html>

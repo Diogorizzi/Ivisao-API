@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     COMPANY_DESCRIPTION: str = "Uma empresa focada em soluções inteligentes com agentes AI."
 
     # Server Configuration
+    HOST: str = "0.0.0.0"  # "0.0.0.0" aceita conexões de outros computadores da rede local; "localhost" restringe só a esta máquina
     PORT: int = 7777
     ENVIRONMENT: str = "production"  # "production" desabilita /docs e /redoc; "development" habilita
 

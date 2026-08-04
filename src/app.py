@@ -124,14 +124,14 @@ _studio_db = SqliteDb(db_file=_os.getenv("SQLITE_DB_PATH", "agno.db"))
 _registry = build_registry(studio_db=_studio_db)
 
 # Docs desabilitados em produção; habilitados apenas em desenvolvimento local
-_is_production = _os.getenv("ENVIRONMENT", "production").lower() == "production"
+_is_production = settings.ENVIRONMENT.lower() == "production"
 _docs_url = None if _is_production else "/docs"
 _redoc_url = None if _is_production else "/redoc"
 _openapi_url = None if _is_production else "/openapi.json"
 
 # Cria FastAPI com redirect_slashes=False para evitar loop com BaseHTTPMiddleware
 _base_app = FastAPI(
-    title="Dartha API V3",
+    title=settings.PROJECT_NAME,
     version="1.0.0",
     redirect_slashes=False,
     docs_url=_docs_url,
@@ -169,6 +169,16 @@ app.add_middleware(MCPInjectionMiddleware)
 # Painel admin de gestão de knowledge
 app.include_router(admin_router, prefix="/admin")
 app.add_middleware(AdminAuthMiddleware)
+
+# Chat interno para a equipe conversar com os assistentes por departamento
+# (rota explícita em vez de StaticFiles porque redirect_slashes=False impede
+#  o mount de resolver "/chat" -> index.html automaticamente)
+from fastapi.responses import FileResponse
+
+@app.get("/chat", include_in_schema=False)
+@app.get("/chat/", include_in_schema=False)
+async def chat_page():
+    return FileResponse("src/static/chat/index.html")
 
 from src.mcp_servers.routes import router as mcp_router
 from src.mcp_servers.db import create_tables as _create_mcp_tables
@@ -224,6 +234,7 @@ if __name__ == "__main__":
     # Para produção, você pode usar AuthorizationConfig(verification_keys=[...])
     agent_os.serve(
         app="src.app:app",
+        host=settings.HOST,
         port=settings.PORT,
         reload=False,
         reload_excludes=[".venv", ".venv_dartha", ".git", "*.db", "*.log"],
