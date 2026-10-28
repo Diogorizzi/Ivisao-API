@@ -178,7 +178,9 @@ from fastapi.responses import FileResponse
 @app.get("/chat", include_in_schema=False)
 @app.get("/chat/", include_in_schema=False)
 async def chat_page():
-    return FileResponse("src/static/chat/index.html")
+    # no-cache: o navegador revalida a cada acesso (304 se não mudou), então
+    # atualizações do chat chegam a todos os computadores sem precisar limpar cache
+    return FileResponse("src/static/chat/index.html", headers={"Cache-Control": "no-cache"})
 
 from src.mcp_servers.routes import router as mcp_router
 from src.mcp_servers.db import create_tables as _create_mcp_tables

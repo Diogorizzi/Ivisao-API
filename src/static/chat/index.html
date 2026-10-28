@@ -104,9 +104,32 @@
     font-size: 14px;
     max-width: 320px;
   }
-  .msg { max-width: 70%; padding: 11px 15px; border-radius: 14px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
-  .msg.user { align-self: flex-end; background: var(--blue); color: #fff; border-bottom-right-radius: 4px; }
-  .msg.agent { align-self: flex-start; background: var(--panel); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+  .msg { max-width: 70%; padding: 11px 15px; border-radius: 14px; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+  .msg.user { align-self: flex-end; background: var(--blue); color: #fff; border-bottom-right-radius: 4px; white-space: pre-wrap; }
+  .msg.agent { align-self: flex-start; max-width: 78%; background: var(--panel); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+
+  /* Markdown nas respostas dos assistentes */
+  .msg.agent > :first-child { margin-top: 0; }
+  .msg.agent > :last-child { margin-bottom: 0; }
+  .msg.agent p, .msg.agent ul, .msg.agent ol, .msg.agent pre, .msg.agent blockquote, .msg.agent .table-wrap { margin: 0 0 10px; }
+  .msg.agent h1, .msg.agent h2, .msg.agent h3, .msg.agent h4, .msg.agent h5, .msg.agent h6 { margin: 14px 0 6px; line-height: 1.3; color: var(--blue-dark); }
+  .msg.agent h1 { font-size: 1.25em; }
+  .msg.agent h2 { font-size: 1.15em; }
+  .msg.agent h3 { font-size: 1.05em; }
+  .msg.agent h4, .msg.agent h5, .msg.agent h6 { font-size: 1em; }
+  .msg.agent ul, .msg.agent ol { padding-left: 22px; }
+  .msg.agent li { margin: 2px 0; }
+  .msg.agent li > ul, .msg.agent li > ol { margin: 4px 0; }
+  .msg.agent code { background: var(--blue-light); padding: 1px 5px; border-radius: 4px; font-family: Consolas, 'Courier New', monospace; font-size: .92em; }
+  .msg.agent pre { background: #f0f4f5; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; overflow-x: auto; }
+  .msg.agent pre code { background: none; padding: 0; }
+  .msg.agent blockquote { border-left: 3px solid var(--blue); padding-left: 12px; color: var(--muted); }
+  .msg.agent hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+  .msg.agent a { color: var(--blue); }
+  .msg.agent .table-wrap { overflow-x: auto; }
+  .msg.agent table { border-collapse: collapse; font-size: 13px; }
+  .msg.agent th, .msg.agent td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; vertical-align: top; }
+  .msg.agent th { background: var(--blue-light); }
   .msg.pending { align-self: flex-start; color: var(--muted); font-style: italic; }
   .msg.error { align-self: flex-start; background: #fdecea; border: 1px solid #f5c2c0; color: #a33; }
 
@@ -279,6 +302,142 @@ function selectAgent(agent) {
   renderMessages();
 }
 
+// ---------- Markdown (renderizador próprio: escapa todo HTML antes de formatar) ----------
+const MD_LIST_RE = /^(\s*)([-*+]|\d+[.)])\s+(.*)$/;
+const MD_HR_RE = /^\s*([-*_])(\s*\1){2,}\s*$/;
+const MD_TABLE_SEP_RE = /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/;
+
+function escapeHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function renderInline(text) {
+  const codes = [];
+  text = text.replace(/\u0000/g, "").replace(/`([^`\n]+)`/g, (_, c) => {
+    codes.push(c);
+    return "\u0000" + (codes.length - 1) + "\u0000";
+  });
+  // <br> é a única tag HTML aceita (modelos usam dentro de células de tabela); o resto é escapado
+  text = escapeHtml(text.replace(/\u0001/g, "").replace(/<br\s*\/?>/gi, "\u0001")).replace(/\u0001/g, "<br>");
+  text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  text = text
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/(^|[^\w])__(?!\s)([^_\n]+?)__(?!\w)/g, "$1<strong>$2</strong>")
+    .replace(/(^|[^*\w])\*(?!\s)([^*\n]+?)\*(?!\*)/g, "$1<em>$2</em>")
+    .replace(/(^|[\s(])_(?!\s)([^_\n]+?)_(?=[\s).,;:!?]|$)/g, "$1<em>$2</em>")
+    .replace(/~~(.+?)~~/g, "<del>$1</del>");
+  return text.replace(/\u0000(\d+)\u0000/g, (_, i) => "<code>" + escapeHtml(codes[+i]) + "</code>");
+}
+
+function mdSplitRow(line) {
+  return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(c => c.trim());
+}
+
+function mdBuildList(items) {
+  let html = "";
+  const stack = [];
+  for (const it of items) {
+    const tag = it.ordered ? "ol" : "ul";
+    while (stack.length && it.indent < stack[stack.length - 1].indent) {
+      html += "</li></" + stack.pop().tag + ">";
+    }
+    if (stack.length && it.indent === stack[stack.length - 1].indent && tag !== stack[stack.length - 1].tag) {
+      html += "</li></" + stack.pop().tag + ">";
+    }
+    if (!stack.length || it.indent > stack[stack.length - 1].indent) {
+      html += "<" + tag + ">";
+      stack.push({ indent: it.indent, tag });
+    } else {
+      html += "</li>";
+    }
+    html += "<li>" + renderInline(it.text);
+  }
+  while (stack.length) html += "</li></" + stack.pop().tag + ">";
+  return html;
+}
+
+function renderMarkdown(src) {
+  const lines = String(src).replace(/\r\n?/g, "\n").split("\n");
+  const out = [];
+  let i = 0;
+
+  const startsBlock = (idx) => {
+    const l = lines[idx];
+    return /^\s*```/.test(l) || /^#{1,6}\s/.test(l) || MD_HR_RE.test(l) || MD_LIST_RE.test(l)
+      || /^\s*>/.test(l)
+      || (l.includes("|") && idx + 1 < lines.length && MD_TABLE_SEP_RE.test(lines[idx + 1]));
+  };
+
+  while (i < lines.length) {
+    const line = lines[i];
+    if (!line.trim()) { i++; continue; }
+
+    if (/^\s*```/.test(line)) {
+      const code = [];
+      i++;
+      while (i < lines.length && !/^\s*```/.test(lines[i])) code.push(lines[i++]);
+      i++;
+      out.push("<pre><code>" + escapeHtml(code.join("\n")) + "</code></pre>");
+      continue;
+    }
+
+    const h = line.match(/^(#{1,6})\s+(.*)$/);
+    if (h) {
+      out.push("<h" + h[1].length + ">" + renderInline(h[2].trim()) + "</h" + h[1].length + ">");
+      i++;
+      continue;
+    }
+
+    if (MD_HR_RE.test(line)) { out.push("<hr>"); i++; continue; }
+
+    if (/^\s*>/.test(line)) {
+      const q = [];
+      while (i < lines.length && /^\s*>/.test(lines[i])) q.push(lines[i++].replace(/^\s*>\s?/, ""));
+      out.push("<blockquote>" + renderMarkdown(q.join("\n")) + "</blockquote>");
+      continue;
+    }
+
+    if (line.includes("|") && i + 1 < lines.length && MD_TABLE_SEP_RE.test(lines[i + 1])) {
+      const head = mdSplitRow(line);
+      i += 2;
+      const rows = [];
+      while (i < lines.length && lines[i].trim() && lines[i].includes("|")) rows.push(mdSplitRow(lines[i++]));
+      out.push('<div class="table-wrap"><table><thead><tr>'
+        + head.map(c => "<th>" + renderInline(c) + "</th>").join("")
+        + "</tr></thead><tbody>"
+        + rows.map(r => "<tr>" + r.map(c => "<td>" + renderInline(c) + "</td>").join("") + "</tr>").join("")
+        + "</tbody></table></div>");
+      continue;
+    }
+
+    if (MD_LIST_RE.test(line)) {
+      const items = [];
+      while (i < lines.length) {
+        const lm = lines[i].match(MD_LIST_RE);
+        if (lm) {
+          items.push({ indent: lm[1].replace(/\t/g, "    ").length, ordered: /\d/.test(lm[2]), text: lm[3] });
+          i++;
+        } else if (items.length && /^\s+\S/.test(lines[i]) && !/^\s*```/.test(lines[i])) {
+          items[items.length - 1].text += " " + lines[i].trim();
+          i++;
+        } else if (!lines[i].trim() && i + 1 < lines.length && MD_LIST_RE.test(lines[i + 1])) {
+          i++;
+        } else {
+          break;
+        }
+      }
+      out.push(mdBuildList(items));
+      continue;
+    }
+
+    const para = [];
+    while (i < lines.length && lines[i].trim() && (para.length === 0 || !startsBlock(i))) para.push(lines[i++]);
+    out.push("<p>" + para.map(renderInline).join("<br>") + "</p>");
+  }
+  return out.join("");
+}
+
 function renderMessages() {
   const list = conversations[activeAgent.id] || [];
   messagesEl.innerHTML = "";
@@ -289,7 +448,8 @@ function renderMessages() {
   list.forEach(m => {
     const div = document.createElement("div");
     div.className = "msg " + m.role;
-    div.textContent = m.text;
+    if (m.role === "agent") div.innerHTML = renderMarkdown(m.text);
+    else div.textContent = m.text;
     messagesEl.appendChild(div);
   });
   messagesEl.scrollTop = messagesEl.scrollHeight;

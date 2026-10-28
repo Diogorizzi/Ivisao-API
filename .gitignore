@@ -24,6 +24,7 @@ wheels/
 *_err.log
 *_out.log
 *_err.txt
+task-log.txt
 
 # ChromaDB data
 chroma_data/

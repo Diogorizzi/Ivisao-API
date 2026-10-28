@@ -3,7 +3,7 @@
 globals:
   company_name: "Instituto da Visão"
   company_description: "Instituto da Visão é uma clínica oftalmológica especializada em cirurgias de catarata e cuidados com a saúde ocular, com atendimento humanizado e foco em excelência clínica."
-  default_model: "openai:gpt-4o-mini"
+  default_model: "openrouter:deepseek/deepseek-v4.1-flash"
 
   default_features:
     memory: true
@@ -20,7 +20,7 @@ agents:
   # ==================== SUPER ADMIN ====================
   - name: "Super Admin Assistant"
     department: null  # null = acesso a TODOS os dados do RAG
-    model: "openai:gpt-4o"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Assistente executivo com visão cross-departamental"
 
     features:
@@ -51,13 +51,13 @@ agents:
 
   # ==================== GERAL ====================
   - name: "General Assistant"
-    department: "geral"
-    model: "openai:gpt-4o-mini"
+    department: "institucional"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Assistente geral para tarefas públicas"
 
     features:
       memory: true
-      rag: false  # SEM acesso à base de conhecimento interna
+      rag: true  # material institucional/marketing (ex: portfólio) — sem dados sensíveis de pacientes
       web_search: true
       add_history: true
       num_history_runs: 10
@@ -74,13 +74,13 @@ agents:
     instructions:
       - "Você é o assistente geral do {{company_name}}."
       - "{{company_description}}"
-      - "Ajuda com tarefas genéricas e pesquisa geral."
-      - "Você NÃO tem acesso a documentos internos confidenciais da clínica."
+      - "Ajuda com tarefas genéricas, pesquisa geral e material institucional/portfólio da clínica."
+      - "Você tem acesso apenas a material institucional público (ex: portfólio). Você NÃO tem acesso a dados de pacientes ou documentos internos confidenciais dos demais departamentos."
 
   # ==================== RECEPÇÃO ====================
   - name: "Recepção Assistant"
     department: "recepcao"
-    model: "openai:gpt-4o-mini"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Apoio ao atendimento e agendamento de pacientes"
 
     features:
@@ -108,7 +108,7 @@ agents:
   # ==================== CONSULTÓRIOS ====================
   - name: "Consultórios Assistant"
     department: "consultorios"
-    model: "openai:gpt-4o-mini"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Apoio às equipes de consulta médica"
 
     features:
@@ -139,7 +139,7 @@ agents:
   # ==================== SALA DE EXAMES ====================
   - name: "Sala de Exames Assistant"
     department: "sala-exames"
-    model: "openai:gpt-4o-mini"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Apoio aos protocolos e fluxos de exames oftalmológicos"
 
     features:
@@ -168,7 +168,7 @@ agents:
   # ==================== ORIENTAÇÃO CIRÚRGICA ====================
   - name: "Orientação Cirúrgica Assistant"
     department: "orientacao-cirurgica"
-    model: "openai:gpt-4o"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Orientações pré e pós-operatórias para pacientes cirúrgicos"
 
     features:
@@ -199,7 +199,7 @@ agents:
   # ==================== ADMINISTRATIVO ====================
   - name: "Administrativo Assistant"
     department: "administrativo"
-    model: "openai:gpt-4o-mini"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Apoio administrativo e organizacional"
 
     features:
@@ -228,7 +228,7 @@ agents:
   # ==================== FATURAMENTO ====================
   - name: "Faturamento Assistant"
     department: "faturamento"
-    model: "openai:gpt-4o-mini"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Apoio ao faturamento de procedimentos e convênios"
 
     features:
@@ -258,7 +258,7 @@ agents:
   # ==================== FINANCEIRO ====================
   - name: "Financeiro Assistant"
     department: "financeiro"
-    model: "openai:gpt-4o"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Análise financeira e gestão de fluxo de caixa"
 
     features:
@@ -288,7 +288,7 @@ agents:
   # ==================== CENTRAL DE GUIAS ====================
   - name: "Central de Guias Assistant"
     department: "central-guias"
-    model: "openai:gpt-4o-mini"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Apoio à emissão e controle de guias de autorização (convênios)"
 
     features:
@@ -319,7 +319,7 @@ agents:
   # ==================== FARMÁCIA ====================
   - name: "Farmácia Assistant"
     department: "farmacia"
-    model: "openai:gpt-4o-mini"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Apoio ao controle de estoque e dispensação de medicamentos"
 
     features:
@@ -349,7 +349,7 @@ agents:
   # ==================== CENTRO CIRÚRGICO ====================
   - name: "Centro Cirúrgico Assistant"
     department: "centro-cirurgico"
-    model: "openai:gpt-4o"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
     description: "Apoio à programação e protocolos do centro cirúrgico"
 
     features:
@@ -375,4 +375,33 @@ agents:
       - "Você apoia a programação de cirurgias, escalas da equipe cirúrgica e protocolos de segurança do centro cirúrgico."
       - "Você tem acesso aos dados do Centro Cirúrgico no RAG."
       - "Este é um contexto sensível de saúde: siga estritamente os protocolos oficiais da clínica e nunca invente informações sobre procedimentos cirúrgicos."
+      - "Use a ferramenta search_knowledge apenas quando a pergunta envolver informações internas da clínica, documentos, políticas ou dados específicos do departamento."
+
+  # ==================== TELEFONIA ====================
+  - name: "Telefonia Assistant"
+    department: "telefonia"
+    model: "openrouter:deepseek/deepseek-v4.1-flash"
+    description: "Apoio às rotinas e informações do setor de Telefonia"
+
+    features:
+      memory: true
+      rag: true
+      web_search: false
+      add_history: true
+      num_history_runs: 15
+      num_documents: 8
+
+    tools: []
+
+    skills:
+      - "shared/data-analysis"
+
+    mcps: []
+
+    instructions:
+      - "Você é o assistente de Telefonia do {{company_name}}."
+      - "{{company_description}}"
+      - "Você apoia o setor de Telefonia com procedimentos, roteiros de atendimento, fluxos e orientações operacionais do setor."
+      - "Você tem acesso aos dados de Telefonia no RAG."
+      - "Seja claro e objetivo. Nunca invente números de telefone, ramais, horários ou prazos — se a informação não estiver nos documentos, diga que não encontrou e oriente a confirmar com o responsável do setor."
       - "Use a ferramenta search_knowledge apenas quando a pergunta envolver informações internas da clínica, documentos, políticas ou dados específicos do departamento."

@@ -22,8 +22,7 @@ from src.admin.auth import (
     create_token,
     get_current_admin,
 )
-from src.admin.queue import process_document, sse_generator
-from src.knowledge.base import CHROMA_HOST, CHROMA_PORT, CHROMA_COLLECTION
+from src.admin.queue import _get_chroma_collection, process_document, sse_generator
 from src.config.settings import settings
 
 router = APIRouter(tags=["Admin"])
@@ -172,9 +171,7 @@ async def rename_sector(
 
     # Atualiza metadata no ChromaDB para os docs afetados
     try:
-        import chromadb as _chromadb
-        client = _chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
-        collection = client.get_collection(CHROMA_COLLECTION)
+        collection = _get_chroma_collection()
 
         # Coleta todos os chroma_ids dos docs deste departamento (já renomeado no DB)
         docs = admin_db.get_documents_by_department(new_name)
@@ -342,10 +339,8 @@ def _delete_document_data(doc: admin_db.KnowledgeDocument) -> None:
     chroma_ids = doc.chroma_ids_list()
     if chroma_ids:
         try:
-            import chromadb as _chromadb
-            client = _chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
-            collection = client.get_collection(CHROMA_COLLECTION)
-            collection.delete(ids=chroma_ids)
+            # mesmo acesso da indexação (HTTP/Docker ou modo local), senão os vetores ficam órfãos
+            _get_chroma_collection().delete(ids=chroma_ids)
         except Exception as e:
             print(f"[Admin] Aviso ao deletar do ChromaDB: {e}")
 

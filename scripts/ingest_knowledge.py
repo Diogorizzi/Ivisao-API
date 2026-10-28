@@ -1,7 +1,10 @@
 import os
+import sys
 import uuid
 import time
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Rich console output
 from rich.console import Console
@@ -9,10 +12,11 @@ from rich.panel import Panel
 from rich.progress import Progress
 from rich.table import Table
 
-# Suporte OpenAI Embeddings e Chroma
+# Embeddings (OpenRouter) e Chroma
 import chromadb
 from dotenv import load_dotenv
-from openai import OpenAI
+
+from src.knowledge.embeddings import EMBEDDING_MODEL, embed_text
 
 # Extratores locais
 from pypdf import PdfReader
@@ -23,11 +27,7 @@ console = Console()
 # Configuração Base
 load_dotenv()
 RAG_DATA_DIR = Path("data/RAG")
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-
-openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
-EMBEDDING_MODEL = "text-embedding-3-small"
-EMBEDDING_DIMENSIONS = 1536
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 
 CHROMA_HOST = os.environ.get("CHROMA_HOST", "localhost")
 CHROMA_PORT = int(os.environ.get("CHROMA_PORT", "8000"))
@@ -43,7 +43,7 @@ def init_collection():
         client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
         collection = client.get_or_create_collection(
             name=CHROMA_COLLECTION,
-            metadata={"hnsw:space": "cosine"}  # embeddings da OpenAI são otimizados para Similaridade de Coseno
+            metadata={"hnsw:space": "cosine"}
         )
         console.print(f"[+] Conectado ao ChromaDB via HTTP no Docker ({CHROMA_HOST}:{CHROMA_PORT})", style="green")
         return collection
@@ -54,15 +54,6 @@ def init_collection():
             name=CHROMA_COLLECTION,
             metadata={"hnsw:space": "cosine"}
         )
-
-def generate_embedding(content_data: str) -> list[float]:
-    """Chama a API de Embeddings da OpenAI para textos"""
-    result = openai_client.embeddings.create(
-        model=EMBEDDING_MODEL,
-        input=content_data,
-        dimensions=EMBEDDING_DIMENSIONS,
-    )
-    return result.data[0].embedding
 
 def process_and_chunk_file(file_path: Path):
     """
@@ -107,13 +98,13 @@ def process_and_chunk_file(file_path: Path):
     return chunks
 
 def run_ingestion():
-    if not OPENAI_API_KEY:
-         console.print("[ERRO] Variável OPENAI_API_KEY não foi encontrada ou é inválida no ambiente (.env).", style="red bold")
+    if not OPENROUTER_API_KEY:
+         console.print("[ERRO] Variável OPENROUTER_API_KEY não foi encontrada ou é inválida no ambiente (.env).", style="red bold")
          return
 
     # Rich header panel
     console.print(Panel.fit(
-        "[bold cyan]Ivisao Ingestion Parser - OpenAI text-embedding-3-small[/bold cyan]",
+        f"[bold cyan]Ivisao Ingestion Parser - {EMBEDDING_MODEL}[/bold cyan]",
         border_style="cyan"
     ))
 
@@ -143,7 +134,7 @@ def run_ingestion():
                         chunk_id = f"{department_name}_{chunk['chunk_id']}_{uuid.uuid4().hex[:6]}"
 
                         try:
-                            vector = generate_embedding(chunk["data"])
+                            vector = embed_text(chunk["data"])
                             time.sleep(1) # Pausa estratégica leve para evitar Rate Limit 429
                         except Exception as embed_err:
                             console.print(f"    [X] Erro de API no arquivo {file_path.name}: {embed_err}", style="red")

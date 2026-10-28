@@ -10,10 +10,9 @@ from pathlib import Path
 from typing import AsyncGenerator, Dict
 
 import chromadb
-from google import genai
-from google.genai import types
 
 from src.admin import db as admin_db
+from src.knowledge.embeddings import embed_text
 
 # SSE: dict de queues por doc_id
 _sse_queues: Dict[str, asyncio.Queue] = {}
@@ -21,50 +20,26 @@ _sse_queues: Dict[str, asyncio.Queue] = {}
 CHROMA_HOST = os.getenv("CHROMA_HOST", "localhost")
 CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
 CHROMA_COLLECTION = os.getenv("CHROMA_COLLECTION", "dartha_knowledge")
-EMBEDDING_MODEL = "gemini-embedding-2-preview"
+CHROMA_PERSIST_PATH = os.getenv("CHROMA_PERSIST_PATH", "./chroma_data")
 
+# Indexação de imagens ainda não implementada (o modelo multimodal aceita, mas o
+# formato de entrada via OpenRouter precisa ser validado antes).
 IMAGE_EXTENSIONS = {"png", "jpg", "jpeg"}
-IMAGE_MIME = {
-    "png": "image/png",
-    "jpg": "image/jpeg",
-    "jpeg": "image/jpeg",
-}
 
 
 def _get_chroma_collection():
-    client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+    """Tenta o servidor ChromaDB via HTTP (Docker); se indisponível, cai para
+    o modo local persistente (mesmo diretório usado em src/knowledge/base.py
+    e scripts/ingest_knowledge.py)."""
+    try:
+        client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+        client.heartbeat()
+    except Exception:
+        client = chromadb.PersistentClient(path=CHROMA_PERSIST_PATH)
     return client.get_or_create_collection(
         name=CHROMA_COLLECTION,
         metadata={"hnsw:space": "cosine"},
     )
-
-
-def _generate_embedding(client: genai.Client, text: str) -> list[float]:
-    result = client.models.embed_content(
-        model=EMBEDDING_MODEL,
-        contents=[text],
-        config=types.EmbedContentConfig(
-            task_type="RETRIEVAL_DOCUMENT",
-            output_dimensionality=768,
-        ),
-    )
-    return result.embeddings[0].values
-
-
-def _generate_image_embedding(client: genai.Client, file_bytes: bytes, mime_type: str) -> list[float]:
-    """Generates a 768-dim embedding from image bytes using Gemini inline_data API.
-    The resulting vector lives in the same space as text embeddings from _generate_embedding."""
-    result = client.models.embed_content(
-        model=EMBEDDING_MODEL,
-        contents=[types.Content(parts=[types.Part(
-            inline_data=types.Blob(mime_type=mime_type, data=file_bytes)
-        )])],
-        config=types.EmbedContentConfig(
-            task_type="RETRIEVAL_DOCUMENT",
-            output_dimensionality=768,
-        ),
-    )
-    return result.embeddings[0].values
 
 
 def _chunk_text(text: str, chunk_size: int = 1600, overlap: int = 320) -> list[str]:
@@ -147,10 +122,9 @@ def process_document(doc_id: str, loop: asyncio.AbstractEventLoop = None) -> Non
     import threading
 
     def _run():
-        google_api_key = os.getenv("GOOGLE_API_KEY", "")
-        if not google_api_key:
-            admin_db.update_status(doc_id, "error", error_msg="GOOGLE_API_KEY não configurada")
-            _emit(doc_id, {"step": "error", "message": "GOOGLE_API_KEY não configurada"})
+        if not os.getenv("OPENROUTER_API_KEY", ""):
+            admin_db.update_status(doc_id, "error", error_msg="OPENROUTER_API_KEY não configurada")
+            _emit(doc_id, {"step": "error", "message": "OPENROUTER_API_KEY não configurada"})
             return
 
         doc = admin_db.get_document(doc_id)
@@ -169,7 +143,6 @@ def process_document(doc_id: str, loop: asyncio.AbstractEventLoop = None) -> Non
             return
 
         try:
-            genai_client = genai.Client(api_key=google_api_key)
             collection = _get_chroma_collection()
         except Exception as e:
             admin_db.update_status(doc_id, "error", error_msg=f"Conexão: {e}")
@@ -180,33 +153,9 @@ def process_document(doc_id: str, loop: asyncio.AbstractEventLoop = None) -> Non
         doc_title = Path(doc.filename).stem.replace("_", " ").replace("-", " ").title()
 
         if ext in IMAGE_EXTENSIONS:
-            # Image branch: single embedding from raw bytes, no chunking
-            _emit(doc_id, {"step": "chunking"})
-            _emit(doc_id, {"step": "embedding", "done": 0, "total": 1})
-            chunk_id = f"{doc.department}_{doc_id}_0"
-            try:
-                mime_type = IMAGE_MIME.get(ext, "image/jpeg")
-                vector = _generate_image_embedding(genai_client, file_bytes, mime_type)
-                collection.add(
-                    ids=[chunk_id],
-                    embeddings=[vector],
-                    documents=[doc.filename],
-                    metadatas=[{
-                        "department": doc.department,
-                        "source_file": doc.filename,
-                        "doc_title": doc_title,
-                        "chunk_index": 0,
-                        "file_type": ext,
-                    }],
-                )
-                _emit(doc_id, {"step": "embedding", "done": 1, "total": 1})
-            except Exception as e:
-                admin_db.update_status(doc_id, "error", error_msg=f"Embedding imagem: {e}")
-                _emit(doc_id, {"step": "error", "message": str(e)})
-                return
-
-            admin_db.update_status(doc_id, "indexed", chunk_count=1, chroma_ids=[chunk_id])
-            _emit(doc_id, {"step": "done", "chunk_count": 1})
+            msg = "Indexação de imagens ainda não está habilitada (somente texto)."
+            admin_db.update_status(doc_id, "error", error_msg=msg)
+            _emit(doc_id, {"step": "error", "message": msg})
             return
 
         # Text branch: extract → chunk → embed per chunk
@@ -233,7 +182,7 @@ def process_document(doc_id: str, loop: asyncio.AbstractEventLoop = None) -> Non
         chroma_ids = []
         for i, chunk in enumerate(chunks):
             try:
-                vector = _generate_embedding(genai_client, chunk)
+                vector = embed_text(chunk)
                 time.sleep(0.5)
                 chunk_id = f"{doc.department}_{doc_id}_{i}"
                 collection.add(

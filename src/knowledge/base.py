@@ -17,6 +17,7 @@ from agno.vectordb.chroma import ChromaDb
 import chromadb
 
 from src.config.settings import settings
+from src.knowledge.embeddings import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL, OPENROUTER_BASE_URL
 from src.tools.file_parser import convert_file_to_text
 
 # ChromaDB connection config (Docker HTTP)
@@ -44,7 +45,9 @@ DEPARTMENT_MAPPING = {
     "central-guias": "central-guias",
     "farmacia": "farmacia",
     "centro-cirurgico": "centro-cirurgico",
-    "geral": None,  # Geral não tem filtro
+    "telefonia": "telefonia",
+    "institucional": "institucional",  # material público/marketing (ex: portfólio), usado pelo General Assistant
+    "geral": None,  # Geral não tem filtro — não usar para conteúdo real, buscaria em TODOS os departamentos
 }
 
 
@@ -168,11 +171,12 @@ def get_knowledge_base(department: str = None, num_documents: int = 5) -> Knowle
     if cache_key in _knowledge_instances:
         return _knowledge_instances[cache_key]
 
-    # Embedder OpenAI text-embedding-3-small — 1536 dimensões (igual ao script de ingestão)
+    # Mesmo modelo/dimensão usados na indexação (ver src/knowledge/embeddings.py)
     embedder = OpenAIEmbedder(
-        id="text-embedding-3-small",
-        api_key=settings.OPENAI_API_KEY,
-        dimensions=1536,
+        id=EMBEDDING_MODEL,
+        api_key=settings.OPENROUTER_API_KEY,
+        base_url=OPENROUTER_BASE_URL,
+        dimensions=EMBEDDING_DIMENSIONS,
     )
 
     vector_db = DarthaHttpChromaDb(

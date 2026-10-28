@@ -5,6 +5,7 @@ Suporta: .pdf (pypdf), .docx, .xlsx, .pptx, .csv, .txt, .md e mais (markitdown).
 
 import io
 import os
+import re
 import tempfile
 from pathlib import Path
 from typing import Optional
@@ -57,7 +58,8 @@ def convert_file_to_text(file_bytes: bytes, filename: str) -> Optional[str]:
 
         try:
             result = md.convert(tmp_path)
-            return result.text_content
+            # imagens embutidas viram "![](data:image/...base64...)": ruído sem valor para busca
+            return re.sub(r"!\[[^\]]*\]\(data:image[^)]*\)", "", result.text_content)
         finally:
             os.unlink(tmp_path)
 

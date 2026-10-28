@@ -1,11 +1,19 @@
 import os
 from dotenv import load_dotenv
 load_dotenv()
-from agno.knowledge.embedder.openai import OpenAIEmbedder
+import sys
+from pathlib import Path
 
-e = OpenAIEmbedder(id="text-embedding-3-small", api_key=os.environ["OPENAI_API_KEY"], dimensions=1536)
-res = e.get_embedding("test")
-if len(res) > 0:
-    print("SUCCESS", len(res))
-else:
-    print("FAILED")
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from agno.knowledge.embedder.openai import OpenAIEmbedder
+from src.knowledge.embeddings import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL, OPENROUTER_BASE_URL, embed_text
+
+direct = embed_text("teste")
+print("SDK direto (sem dimensions):", len(direct), "dimensões")
+
+# Mesmo caminho usado pela busca dos agentes (agno + base_url + dimensions)
+e = OpenAIEmbedder(id=EMBEDDING_MODEL, api_key=os.environ["OPENROUTER_API_KEY"], base_url=OPENROUTER_BASE_URL, dimensions=EMBEDDING_DIMENSIONS)
+res = e.get_embedding("teste")
+print("Embedder do agno:", len(res), "dimensões (esperado:", EMBEDDING_DIMENSIONS, ")")
+print("OK" if len(res) == len(direct) == EMBEDDING_DIMENSIONS else "INCONSISTENTE — ajustar EMBEDDING_DIMENSIONS")
